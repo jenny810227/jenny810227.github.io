@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="reset.css">
+    <style>
+        .panel{
+            font-family: Arial, Helvetica, sans-serif;
+            padding-left: calc((100vw - 1600px)/2);
+            padding-right: calc((100vw - 1600px)/2);
+            margin: 0 0 20px;
+        }
+        .panel a{
+            text-decoration:none ;
+        }
+        .panel-functional{
+            display: flex;
+            justify-content: space-between;
+            border-bottom:1px solid #9D9D9D ;
+        }
+        .store{
+            display: flex;
+            align-items: center;
+        }
+        .store p{
+            color: #9D9D9D;
+            padding: 0 10px;
+        }
+        .store p:nth-child(1){
+            border-right: 1px solid #4F4F4F;
+        }
+        .store a{
+            color: 	#4F4F4F;
+            transition: 0.5s;
+        }
+        .store a:hover{
+            color: #FF9224;
+        }
+        .function ul{
+            display: flex;
+            align-items: center;
+        }
+        .function li{
+            border-right: 1px solid #9D9D9D;
+            box-sizing: border-box;
+        }
+        .function input[value="USD, $ ∨"]{
+            background-color: #fff;
+            border: none;
+            font-size: 18px;
+            color: #9D9D9D;
+            padding-right: 20px;
+            position: relative;
+            border-bottom: 5px solid #fff;
+        }   
+        .function input[type="button"]:hover{
+            border-bottom:#FF9D6F;
+        }
+        label a{
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            vertical-align: middle;
+        }
+        img[src="by.png"]{
+            width: 45px;
+            height: 45px;
+        }
+        label img{
+            width: 100%;
+            height: 100%;
+        }
+        .function a{
+            text-decoration: none;
+            color: #9D9D9D;
+            margin: 0 20px;         
+            font-size: 20px;
+        }
+        .function li:nth-child(2){
+            border: none;
+        }
+        .function li:nth-child(3){
+            border-left: 1px solid #9D9D9D;
+        }
+
+        input[type="search"]{
+            border: none;
+            width: 150px;
+            font-size: 20px;
+            padding-left: 20px;
+        }
+        .panel-introduce{
+            padding-left: calc((100vw - 1600px)/2);
+            padding-right: calc((100vw - 1600px)/2);
+            display: flex;
+            justify-content: space-between;
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 20px 0;
+        }
+        .logo{
+            display: block;
+            width: 200px;
+            margin: auto 0;
+        }
+        .logo h1{
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+        .menu{
+            width: 900px;
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: center;
+            text-align: center;
+        }
+        .menu li{
+            margin: auto 20px;
+        }
+        .menu a{
+            text-decoration: none;
+            color: #000;
+            transition: 0.5s;
+        }
+        .menu a:hover{
+            color: #FF9224;
+        }
+        #home{
+            color: #FF9224;
+        }
+        .item{
+            display: flex;
+        } 
+        .item li{
+            width: 25px;
+            height: 25px;
+            margin: auto 15px;
+        }
+        .item img{
+            width: 100%;
+            height: 100%;
+        }
+        .vision{
+            width: 100%;
+            background-color: #F0F0F0;
+            font-family: Arial, Helvetica, sans-serif;
+            padding-bottom: 40px;
+        }        
+        .vision-title img{
+            display: block;
+            margin: 0 0 20px auto;
+            width: 1600px;
+            position: relative;
+        }
+        .vision-text{
+            position: absolute;
+            top: 40%;
+            right: 800px;
+        }
+        .vision-text .sale{
+            background-color: #000;
+            color: #fff;
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 20px;           
+        }
+        .vision-text h2{
+            font-size: 60px;
+            line-height: 1.5;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+        .vision-text .divider{
+            background-color: #000;
+            width: 80px;
+            height: 3px;
+            margin-bottom: 40px;
+        }
+        .vision-text p{
+            color: #7B7B7B;
+            font-size: 22px;
+            line-height: 1.5;
+            margin-bottom: 30px;
+        }
+        .vision-text a{
+            text-decoration: none;
+            color: #000;
+            font-size: 22px;
+            font-weight: 600;
+            transition: 0.5s;
+        }
+        .vision-text a:hover{
+            color: #FF9D6F;
+        }
+        .vision-favorable{
+            display: flex;
+            justify-content: center;
+        }
+        .vision-favorable ul{
+            display: flex;
+            width: 1600px;
+            justify-content: center;
+        }
+        .vision-favorable li{
+            text-align: center;
+            display: block;
+            width: 500px;
+            height: 70px;
+            background-color: #FFD2D2;
+            margin: 0 5px;
+        }
+        .vision-favorable h3{
+            font-size: 22px;
+            margin: 10px 0;
+        }
+        .vision-favorable p{
+            color: #7B7B7B;
+        }
+        .vision-favorable li:nth-child(2){
+            background-color: #FFE6D9;
+        }
+        .vision-favorable li:nth-child(3){
+            background-color: #FFF8D7;
+        }
+        .shop{
+            margin-top: 5%;
+            position: relative;
+            
+        }
+        .shop-title{
+            text-align: center;
+            font-size: 36px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .shop-categories{
+            width: 100%;
+            height: 500px;
+            position: absolute;
+            top: 600%;
+            background-color: #FFE6D9
+        }
+        .shop-categories ul{
+            width: 100%;
+            display: flex;
+            position: absolute;
+            top: -20%;
+            justify-content: center;
+        }
+        .shop-categories li{
+            margin: 0 20px;
+        }
+        .shop-categories img{
+            width: 100%;
+            height: 90%;
+        }
+        .shop-categories a{
+            text-decoration: none;
+        }
+        .shop-categories p{
+            font-size: 24px;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #000;
+            margin-top: 10%;
+            transition: 0.5s;
+        }
+        .shop-categories span{
+            font-size: 30px;
+            font-weight: 500;
+            padding: 0 10px;
+        }
+        .shop-categories p:hover .shop-categories span{
+            color:#FF9D6F;
+        }
+        .shop-categories p:hover{
+            color:#FF9D6F;
+        }
+        .favourite{
+            padding-left: calc((100vw - 1600px)/2);
+            padding-right: calc((100vw - 1600px)/2);
+            margin-top: 900px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .favourite-pic{
+            width: 800px;
+            position: relative;
+            margin-right: 1%;
+        }
+        .favourite-bg{
+            background-color: #F0F0F0;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: -10%;
+            right: -10%;
+            z-index: -1;
+
+        }
+        .favourite-pic img{
+            width: 100%;
+            height: 100%;
+        }
+        .favourite-text{
+            width: 700px;
+            padding:10%;
+            box-sizing: border-box;
+        }
+        .favourite-text h3{
+            font-size: 50px;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #000;
+            font-weight: 500;
+            margin-bottom: 8%;
+        }
+        .favourite-text p{
+            font-size: 20px;
+            font-family: Arial, Helvetica, sans-serif;
+            color: 	#7B7B7B;
+            line-height: 1.5;
+            margin-bottom: 15%;
+        }
+        .favourite-text a{
+            background-color: #000;
+            color: #ffff;
+            text-decoration: none;
+            font-size: 20px;
+            font-family: Arial, Helvetica, sans-serif;
+            padding: 20px 40px;
+            transition: 0.5s;
+        }
+        .favourite-text a:hover{
+            background-color: #FF9D6F;
+        }
+        .popularity{
+            margin-top: 100px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .popularity-title{
+            font-size: 32px;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #000;
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 100px;
+        }
+        .popularity-list ul{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            padding-left: calc((100vw - 1600px)/2);
+            padding-right: calc((100vw - 1600px)/2);
+        }
+        .popularity-list li{
+            width: 360px;
+            height: 600px;
+            box-sizing: border-box;
+            padding: 20px 25px;
+            position: relative;
+            margin-bottom: 100px;
+        }
+        .popularity-list img{
+            width: 310px;
+            height: 450px;
+            vertical-align: top;
+            position: relative;
+        }
+        .popularity-list h4{
+            font-size: 14px;
+            margin: 20px 0;
+            color: #9D9D9D;
+        }
+        .popularity-list h5{
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #000;
+            line-height: 1.4;
+        }
+        .popularity-list p{
+            font-size: 20px;
+            font-weight: bolder;
+            margin-bottom: 5px;
+        }
+        img.star{
+            width: 120px;
+            height: 50px;
+        }
+        .popularity-featured{
+            background-color: #FF9224;
+            color: #fff;
+            padding: 6px 15px;
+            position: absolute;
+            top: 8%;
+            right:7%;
+        }
+        .popularity-hover{
+            position: absolute;
+            top: 20px;
+            left: 25px;
+            width: 310px;
+            height: 450px;
+            background-color: #0008;
+            opacity: 0;
+            transition: 0.5s;
+            
+        }
+        .popularity-list li:hover .popularity-hover{
+            opacity: 1;
+        }
+        .popularity-hover a{
+            position: absolute;
+            bottom: 30px;
+            right: 20px;            
+        }
+        .popularity-hover a:nth-child(2){
+            right: 60px;
+        }
+        .popularity-hover a:nth-child(1){
+            right: 100px;
+        }
+        .popularity-hover img{
+            width: 25px;
+            height: 25px;
+        }
+        .essentials{
+            margin-top: 20px;
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+            background-image: url("https://ld-wp.template-help.com/monstroid1/prod-14924/wp-content/uploads/2018/02/banner4.jpg");
+            color:#fff;
+            padding-bottom: 100px;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            margin-bottom: 120px;
+        }
+        .essentials p{
+            padding-top: 160px;
+            font-size: 30px;
+            padding-bottom: 30px;
+        }
+        .essentials h3{
+            font-size: 70px;
+            margin-bottom: 50px;
+            line-height: 1.2;
+        }
+        .essentials a{
+            display:inline-block;
+            padding: 20px 35px;
+            background-color: #000;
+            text-decoration: none;
+            color:#fff;
+            transition: 0.5s;
+        }
+        .essentials a:hover{
+            background-color:#FF9D6F;
+        }
+        .blog{
+            font-family: Arial, Helvetica, sans-serif;
+            margin-bottom: 30px;
+        }
+        .blog-title{
+            text-align: center;
+            font-size: 30px;
+            margin-bottom: 50px;
+        }
+        .blog-recommend{
+            padding-left: calc((100vw - 1600px)/2);
+            padding-right: calc((100vw - 1600px)/2);
+        }
+       
+        .blog-recommend img{
+            width: 100%;
+        }
+        .blog-recommend ul{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+        .blog-recommend li{
+            width: 650px;
+            position: relative;
+            margin: 0 30px;
+            padding-bottom: 200px;
+        }
+        .author{
+            background-color:#F0F0F0;
+            width: 550px;
+            position: absolute;
+            right: 0;
+            bottom: 100px;
+            padding-left: 25px;
+            padding-bottom: 30px;
+        }
+        .blog-recommend a{
+            text-decoration: none;    
+            transition: 0.5s;
+        }
+        .blog-recommend h4{
+            padding: 20px 0;
+            color: #000;
+            font-size: 24px;
+            transition: 0.5s;
+        }
+        .blog-recommend p{
+            font-size: 18px;
+            line-height: 1.4;
+            margin-bottom: 20px;
+            color: #7B7B7B;
+        }
+        .author a,.author span{
+            color: #9D9D9D;
+        }
+        .blog-recommend a:hover{
+            color: #FF9D6F;
+        }
+        .blog-recommend h4:hover{
+            color: #FF9D6F;
+        }
+        .delivered{
+            background-color: #FF9D6F;
+            display: flex;
+            width: 1280px;
+            padding: 20px 40px;
+            margin: 0 auto;
+        }
+        .delivered p{
+            margin: auto 120px auto 0;
+            font-size: 26px;
+        }
+        input[type="email"]{
+            font-size: 15px;
+            border: none;
+            padding: 15px 280px 15px 0;
+            margin-right: 10px;
+        }
+        input[placeholder="Enter please your email"]{
+            padding-left: 20px;
+        }
+        input[type="button"]{
+            border: none;
+            color: #fff;
+            background-color: #000;
+            padding: 15px 20px;
+            font-size: 16px;
+            transition: 0.5s;
+        }
+        .instagram input[type="button"]:hover{
+            background-color: #FF8040;
+        }
+        .instagram{
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .instagram h3{
+            text-align: center;
+            margin: 80px;
+            font-size: 30px;
+        }
+        .instagram p{
+            margin-left: 50px;
+            font-size: 18px;
+            color: #9D9D9D;
+        }
+        .footer{
+            font-family: Arial, Helvetica, sans-serif;
+            
+        }
+        .footer-effect{
+            background-color: #000;
+            color: #fff;
+            display: flex;
+            padding: 80px 0 60px;
+            border-bottom: 1px solid #7B7B7B;
+            justify-content: center;
+        }
+        .footer-effect ul{
+            width: 300px;
+        }
+        .footer-effect h4{
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+        .footer-effect li{
+            margin-bottom: 20px;
+        }
+        .footer-effect a{
+            text-decoration: none;
+            color: #7B7B7B;
+            transition: 0.5s;
+        }
+        .footer-effect p{
+            color: #7B7B7B;
+            line-height: 1.8;
+        }
+        .footer-effect a:hover{
+            color: #FF9D6F;
+        }
+        .footer-reserved{
+            background-color: #000;
+            padding: 20px 200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .footer-reserved p{
+            color: #9D9D9D;
+        }
+        .footer-reserved img{
+            background-color: #fff;
+        }
+        .links ul{
+            display: flex;
+        }
+        .links li{
+            width: 40px;
+            height: 40px;
+            margin-left: 20px;
+        }
+        
+        .links img{
+            width: 100%;
+            height: 100%;
+        }
+        .links a{
+            position: relative;
+        }
+        .link-hover{
+            width: 40px;
+            height: 40px;
+            opacity: 0;
+            background-color: #FF9D6F;
+            position: absolute;
+            top: -24px;
+            z-index: 1;
+        }
+      
+        .links a:hover .link-hover{
+            opacity: 0.3;
+            color: #7B7B7B;
+        }
+       
+
+
+    </style>
+    </head>
+<body>
+    <div class="panel">
+        <div class="panel-functional">
+            <div class="store">
+                <p>Call us:<a href="#">+3(800) 2345-6789</a></p>
+                <p>7 Days a week from 9:00 am to 7:00 pm</p>
+            </div>
+            <div class="function">
+                <ul>
+                    <li>
+                        <input type="button" value="USD, $ ∨">
+                    </li>
+                    <li>
+                        <a href="#"><img src="by.png" alt=""></a>
+                    </li>
+                    <li>
+                        <a href="#">Login</a>
+                     </li>
+                    <li>
+                        <label>
+                            <input type="search" placeholder="Search...">
+                            <a href="#"><img src="search.png" alt=""></a>
+                        </label>
+                    </li>
+                </ul>
+            </div>
+        </div>    
+        <div class="panel-introduce">
+        <a class="logo" href="#">
+            <img src="logo1.png" alt="logo">
+            <h1>VARIE GATED</h1>
+        </a>
+        <ul class="menu">
+            <li>
+                <a href="#" id="home">HOME</a>
+            </li>
+            <li>
+                <a href="#">ABOUT</a>
+            </li>
+            <li>
+                <a href="#">FEATURES ∨</a>
+            </li>
+            <li>
+                <a href="#">BLOG ∨</a>
+            </li>
+            <li>
+                <a href="#">SHOP ∨</a>
+            </li>
+            <li>
+                <a href="#">CONTACTS</a>
+            </li>
+        </ul>
+        <ul class="item">
+            <li>
+                <a href="#"><img src="fb.png" alt=""></a>
+            </li>
+            <li>
+                <a href="#"><img src="ig.png" alt=""></a>
+            </li>
+            <li>
+                <a href="#"><img src="google.png" alt=""></a>
+            </li>
+            <li>
+                <a href="#"><img src="twitter.png" alt=""></a>
+            </li>
+        </ul>
+
+        </div>
+    </div>
+    <div class="vision">
+        <div class="vision-title">
+            <img src="slider1.jpg" alt="">
+            <div class="vision-text">
+                <p class="sale">-20%SALE</p>
+                <h2>BE A CHERRY ON PIE <br/>IN ANY SITUATION</h2>
+                <p class="divider"></p>
+                <p>Experiment, mix and showcase colors, textures and styles!<br/>Be yourself and impress others!</p>
+                <a href="#">➜ Read More</a>
+            </div>
+        </div>
+        <div class="vision-favorable">
+            <ul>
+                <li>
+                    <h3>FREE STANDARD DELIVERY</h3>
+                    <p>on order over $49</p>
+                </li>
+                <li>
+                    <h3>30% OFF 100’S PANTYS</h3>
+                    <p>use code: pantyup 30</p>
+                </li>
+                <li>
+                    <h3>20% STUDENT DISCOUNT PLUS</h3>
+                    <p>free next day delivey, excludes sale.</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="shop">
+        <div class="shop-title">
+            <h3>SHOP CATEGORIES</h3>
+        </div>
+        <div class="shop-categories">
+            <ul>
+                <li>
+                    <a href="#"><img src="s1.jpg" alt="Blazers"></a>
+                    <a href="#"><p><span>—</span> Blazers</p></a>
+                        
+                    
+                </li>
+                <li>
+                    <a href="#"><img src="s2.jpg" alt="Dresses"></a>
+                    <a href="#"><p><span>—</span>Dresses</p></a>
+                    
+                </li>
+                <li>
+                    <a href="#"><img src="s3.jpg" alt="Jumpsuits"></a>
+                    <a href=""><p><span>—</span>Jumpsuits</p></a>                     
+                </li>
+                <li>
+                    <a href="#"><img src="s4.jpg" alt="New Arrival"></a>
+                    <a href=""><p><span>—</span>New Arrival</p></a>
+                </li>
+            </ul>
+        </div>
+
+    </div>    
+    <div class="favourite">
+        <div class="favourite-pic">
+            <img src="f1.jpg" alt="favourite-pic">
+            <div class="favourite-bg"></div>
+        </div>
+        <div class="favourite-text">
+            <h3>FAVOURITE<br/>BLOUSES</h3>
+            <p>Our new favourite blouses are defined by great all-over patterns and special details. Our new favourite blouses are defined by great all-over patterns and special details.</p>
+            <a href="#">SHOP NOW</a>
+        </div>
+    </div>
+    <div class="popularity">
+        <div class="popularity-title">
+            <h3>MOST RECENT POPULAR MODELS</h3>
+        </div>
+        <div class="popularity-list">
+            <ul>
+                <li>
+                    <img src="p1.jpg" alt="">
+                    <h4>BLAZERS JUMPSUITS</h4>
+                    <h5>BUTTONED SHIRT</h5>
+                    <p>59.00$</p>
+                    <div class="popularity-hover">
+                        <a href="#">
+                            <img src="love.png" alt="">
+                        </a>
+                        <a href="#">
+                            <img src="balance.png" alt="">
+                        </a>
+                        <a href="#">
+                            <img src="search.png" alt="">
+                        </a>
+                    </div>
+                </li>               
+                <li>
+                    <img src="p2.jpg" alt="">
+                    <h4>TROUSERS-SHORTS BLAZERS DRESSES</h4>
+                    <h5>CHECKED TUNIC</h5>
+                    <p>69.00$</p>
+                    <div class="popularity-featured">Featured</div>
+                    <div class="popularity-hover">
+                        <a href="#">
+                            <img src="love.png" alt="">
+                        </a>
+                        <a href="#">
+                            <img src="balance.png" alt="">
+                        </a>
+                        <a href="#">
+                            <img src="search.png" alt="">
+                        </a>
+                    </div>
+                </li>
+                <li>
+                    <img src="p3.jpg" alt="">
+                    <h4>TROUSERS-SHORTS BLAZERS DRESSES </h4>
+                    <h5>EMBROIDERED SHIRT</h5>
+                    <p>36.00$</p>
+                    <div class="popularity-featured">Featured</div>
+                    <div class="popularity-hover">
+                        <a href="#">
+                            <img src="love.png" alt="">
+                        </a>
+                        <a href="#">
+                            <img src="balance.png" alt="">
+                        </a>
+                        <a href="#">
+                            <img src="search.png" alt="">
+                        </a>
+                    </div>
+                </li>
+                <li>
+                    <img src="p4.jpg" alt="">
+                    <h4>TROUSERS-SHORTS BLAZERS</h4>
+                    <h5>FAUX LEATHER JACKET WITH <br/>FLOWING LAPELS</h5>
+                    <p>96.00$</p>
+                    <img src="st.jpg" alt="" class="star">
+                    <div class="popularity-hover">
+                        <a href="#">
+                            <img src="love.png" alt="">
+                        </a>
+                        <a href="#">
+                            <img src="balance.png" alt="">
+                        </a>
+                        <a href="#">
+                            <img src="search.png" alt="">
+                        </a>
+                    </div>
+                </li>
+                <li>
+                    <img src="p5.jpg" alt="">
+                    <h4>TROUSERS-SHORTS DRESSES JUMPSUITS</h4>
+                    <h5>LIGHTWEIGHT PUFFER JACKET</h5>
+                    <p>54.00</p>
+                    <div class="popularity-featured">Featured</div>
+                    <div class="popularity-hover">
+                        <a href="#">
+                            <img src="love.png" alt="">
+                        </a>
+                        <a href="#">
+                            <img src="balance.png" alt="">
+                        </a>
+                        <a href="#">
+                            <img src="search.png" alt="">
+                        </a>
+                    </div>
+                </li>
+                <li>
+                    <img src="p6.jpg" alt="">
+                    <h4>TROUSERS-SHORTS DRESSES</h4>
+                    <h5>POLKA DOT SHIRT DRESS</h5>
+                    <p>66.00$</p>
+                    <img src="st1.jpg" alt="" class="star">
+                    <div class="popularity-hover">
+                        <a href="#">
+                            <img src="love.png" alt="">
+                        </a>
+                        <a href="#">
+                            <img src="balance.png" alt="">
+                        </a>
+                        <a href="#">
+                            <img src="search.png" alt="">
+                        </a>
+                    </div>
+                </li>
+                <li>
+                    <img src="p7.jpg" alt="">
+                    <h4>TROUSERS-SHORTS DRESSES JUMPSUITS</h4>
+                    <h5>RIPPED DENIM JACKET</h5>
+                    <p>35.00$</p>
+                    <div class="popularity-hover">
+                        <a href="#">
+                            <img src="love.png" alt="">
+                        </a>
+                        <a href="#">
+                            <img src="balance.png" alt="">
+                        </a>
+                        <a href="#">
+                            <img src="search.png" alt="">
+                        </a>
+                    </div>
+                </li>
+                <li>
+                    <img src="p8.jpg" alt="">
+                    <h4>TROUSERS-SHORTS DRESSES JUMPSUITS</h4>
+                    <h5>SUEDE EFFECT DRESS</h5>
+                    <p>89.00$</p>
+                    <img src="st2.jpg" alt="" class="star">
+                    <div class="popularity-featured">Featured</div>
+                    <div class="popularity-hover">
+                        <a href="#">
+                            <img src="love.png" alt="">
+                        </a>
+                        <a href="#">
+                            <img src="balance.png" alt="">
+                        </a>
+                        <a href="#">
+                            <img src="search.png" alt="">
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="essentials">
+        <p>DEALY DEALS</p>
+        <h3>MODERN CASUAL<br/>ESSENTIALS</h3>
+        <a href="#">SHOP NOW</a>
+    </div>
+    <div class="blog">
+        <div class="blog-title">
+            <h3>LATEST FROM BLOG</h3>
+        </div>
+        <div class="blog-recommend">
+            <ul>
+                <li>
+                    <a href="#">
+                        <img src="https://ld-wp.template-help.com/monstroid1/prod-14924/wp-content/uploads/2018/02/image11-565x382.jpg" alt="">
+                    </a>
+                    <div class="author">
+                        <a href="#"><h4>WHEN IN DOUBT, WEAR ROSE PUMPS</h4></a>
+                        <p>It’s always a good idea to invest in a good pair of nude pumps. It’s a timeless wardrobe staple just…</p>
+                        <a href="#">22 February, 2018</a>
+                        <span> - post by</span>
+                        <a href="#">admin</a>
+                    </div>
+                </li>
+                <li>
+                    <a href="#">
+                        <img src="https://ld-wp.template-help.com/monstroid1/prod-14924/wp-content/uploads/2018/02/image12-565x382.jpg" alt="">
+                    </a>
+                    <div class="author">
+                        <a href=""><h4>HEM YOUR PANTS FOR A SHOE HEIGHT</h4></a>
+                        <p>A mistake many people make is wearing pants (or dresses) that are too long or too short for their shoes.…</p>
+                        <a href="#">22 February, 2018</a>
+                        <span>- post by</span> 
+                        <a href="#">admin</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="delivered">
+        <p>GET THE LATEST NEWS DELIVERED DAILY!</p>
+        <input type="email" placeholder="Enter please your email" >
+        <input type="button" value="SUBSCRIBE">
+    </div>
+    <div class="instagram">
+        <h3>@INSTAGRAM</h3>
+        <p>Posts not found</p>
+    </div>
+    <div class="footer">
+        <div class="footer-effect">
+            <ul>
+                <h4>CATEGORIES</h4>
+                <li><a href="#">Help & Contact Us</a></li>
+                <li><a href="#">Returns & Refunds</a></li>
+                <li><a href="#">Online Stores</a></li>
+                <li><a href="#">Terms & Conditions</a></li>
+            </ul>
+            <ul>
+                <h4>OUR STORE</h4>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">Shop</a></li>
+                <li><a href="#">Contacts</a></li>
+            </ul>
+            <ul>
+                <h4>PROTFILE</h4>
+                <li><a href="#">Checkout</a></li>
+                <li><a href="#">My account</a></li>
+                <li><a href="#">Order tracking</a></li>
+                <li><a href="#">Help & support</a></li>
+            </ul>
+            <ul>
+                <h4>ABOUT US</h4>
+                <p>Variegated is the place where everyone can is able to find some clothing called to highlight one’s individuality! We are waiting right for you!</p>
+            </ul>
+
+        </div>
+        <div class="footer-reserved">
+            <div class="rights">
+                <p>© 2022 Variegated. All Rights Reserved.</p>
+            </div>
+            <div class="links">
+                <ul>
+                    <li>
+                        <a href="#">
+                            <img src="facebook2.png" alt="">
+                            <div class="link-hover"></div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <img src="instagram2.png" alt="">
+                            <div class="link-hover"></div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <img src="google2.png" alt="">
+                            <div class="link-hover"></div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <img src="twitter2.png" alt="">
+                            <div class="link-hover"></div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
