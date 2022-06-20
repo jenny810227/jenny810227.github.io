@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="reset.css">
+    <style>
+        .recommend{
+            font-family: Arial, Helvetica, sans-serif;
+            box-sizing: border-box;
+            margin-top: 50px;
+        }
+        .recommend-title{
+            display: flex;
+            max-width: 280px;
+            flex-wrap: wrap;
+            margin: auto;
+        }
+        .recommend-title .h3{
+            display: inline-block;
+            color: #fff;
+            font-size: 50px;
+            padding: 25px 10px;
+            background-color: #AE0000;
+            flex-grow: 1;
+        }
+        .recommend-title .txt{
+            background-color: #000;
+            color: #fff;
+            padding: 0 10px;
+        }
+        .recommend-title h4{
+            font-size: 20px;
+            font-weight: 600;
+            padding-top: 20px;
+        }
+        .recommend-title p{
+            font-size: 16px;
+            line-height: 1.5;
+            padding-top: 10px;
+            padding-bottom: 40px;
+        }
+        .recommend-pic{
+            position: relative;
+            margin: auto;
+            max-width: 695px;
+            vertical-align: top;
+        }
+        .recommend-pic img{
+            width: 100%;
+        }
+        .recommend-pic i{
+            color: #AE0000;
+            /* background-color: #fff; */
+            position: absolute;
+            font-size: 40px;
+            top: 50%;
+            right: -2%;
+        }
+        .recommend-innovation{
+            background-color:#F0F0F0;
+            max-width: 600px;
+            padding: 15px;
+            margin: auto;
+        }
+        .recommend-innovation .make{
+            color: #AE0000;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .recommend-innovation h5{
+            background-color: #000;
+            color: #fff;
+            display: inline-block;
+            padding: 5px;
+            margin-bottom: 6px;
+        }
+        .recommend-innovation p{
+            margin-bottom: 6px;
+            line-height: 1.2;
+        }
+        .recommend-bg{
+            background-color: 	#F0F0F0;
+                width: 400px;
+                height: 270px;
+                position: absolute;
+                top: -60px;
+                right: -50px;
+                z-index: -2;
+                display: none;
+        }
+        @media screen and (min-width:1200px) {
+            .body{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .recommed{
+                max-width: 1200px;
+                position: relative;
+                box-sizing: border-box;
+                padding: calc((100% - 1200px) / 2);
+            }
+            .recommend-title{
+                margin: 0 0 200px;
+                position: relative;
+                z-index: 1;
+                top: 0;
+                left: 0;
+            }
+            .recommend-pic{
+                position: relative;
+                margin-top:-386px;
+                margin-left:150px;
+            }
+            .recommend-innovation{
+                margin: 0;
+                position: relative;
+                left: 30px;
+                margin-top: -40px;
+            }
+            .recommend-bg{
+                display: block;
+            }
+            .recommend:nth-child(3) .recommend-pic{
+                margin-top:-410px;
+            }
+            .recommend:nth-child(4) .recommend-pic{
+                margin-top:-410px;
+            }
+            .recommend:nth-child(even) .recommend-title{
+                left: 510px;
+            }
+            .recommend:nth-child(even) .recommend-pic i{
+                left: -2%;
+            }
+            .recommend:nth-child(even) .recommend-pic{
+                margin-left: -110px;
+            }
+            .recommend:nth-child(even) .recommend-innovation{
+                left: 160px;
+            }
+            .recommend:nth-child(even) .recommend-bg{
+                height: 0px
+            }
+        }
+
+    </style>
+    <script src="https://kit.fontawesome.com/7331b936ff.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="body">
+        <div class="recommend">
+            <div class="recommend-title">
+                <div class="h3">
+                    <h3>01操控樂趣</h3>
+                </div>
+                <div class="txt">
+                    <h4>人人滿意的駕駛體驗</h4>
+                    <p>透過最佳重量分配，實現平順起步、直線穩定加速，過彎同時保持車身平穩，帶給駕駛更靈敏的道路反饋，享受隨心馳騁的行駛快感。</p>
+                </div>
+            </div>
+            <div class="recommend-pic">
+                <a href="#">
+                    <img src="car1.png" alt="car">
+                    <i class="fa-brands fa-youtube"></i>
+                    <div class="recommend-bg"></div>
+                </a>
+            </div>
+            <div class="recommend-innovation">
+                <p class="make">因為我們做了這些革新</p>
+                <h5>低重心設計</h5>
+                <p>透過低重心設計，不僅呈現低伏的外觀，更能減少身側傾，保持高速行駛穩定性。</p>
+                <h5>車體剛性強化</h5>
+                <p>車身結構採用超高強材，提高車輛穩定性，同時由雷射強化焊接技術，大幅增加焊點數量，提升身抗扭剛性，強化駕馭穩定性及安全性。</p>
+                <h5>四輪獨立懸吊</h5>
+                <p>搭載全新四輪獨立懸吊設定，透過懸吊的高承載強度，保持輪胎抓地力，同時兼顧轉向靈敏度與清晰路感回饋，提升駕馭樂趣。</p>
+            </div>        
+        </div> 
+        <div class="recommend">
+            <div class="recommend-title">
+                <div class="h3">
+                    <h3>02安全守護</h3>
+                </div>
+                <div class="txt">
+                    <h4>行車更安心的高剛性車體</h4>
+                    <p>您的愛車會妥善保護您，強悍穩固的車身可使您安全無虞。世界級的安全科技讓你輕鬆自如享受旅程、毫無後顧之憂。</p>
+                </div>
+            </div>
+            <div class="recommend-pic">
+                <a href="#">
+                    <img src="car2.png" alt="car2">
+                    <i class="fa-brands fa-youtube"></i>
+                    <div class="recommend-bg"></div>
+                </a>
+            </div>
+            <div class="recommend-innovation">
+                <p class="make">因為我們做了這些革新</p>
+                <h5>主動安全</h5>
+                <p>以先進的TSS系統，主動偵測路況,輔駕駛判斷路況並維持行車安全。</p>
+                <h5>被動安全</h5>
+                <p>堅固的高剛性車體，使用熱沖壓材料的高強度抗扭鋼板，強化座艙對意外事故的保護力。</p>
+            </div>
+        </div>
+        <div class="recommend">
+            <div class="recommend-title">
+                <div class="h3">
+                    <h3>03乘坐舒適</h3>
+                </div>
+                <div class="txt">
+                    <h4>令人放鬆舒適的車室空間</h4>
+                    <p>車室空間設計著重人體工學，透過方向盤、踏板等位置優化，追求更舒適的駕駛位置，並以新型座椅設計，提高座椅包覆性，致力實現長途駕駛不疲勞的舒適駕馭體驗。</p>
+                </div>
+            </div>
+            <div class="recommend-pic">
+                <a href="#">
+                    <img src="car3.png" alt="car3">
+                    <i class="fa-brands fa-youtube"></i>
+                    <div class="recommend-bg"></div>
+                </a>
+            </div>
+            <div class="recommend-innovation">
+                <p class="make">因為我們做了這些革新</p>
+                <h5>駕駛位置最佳化</h5>
+                <p>針對駕駛位置進行徹底的修改，讓駕馭者可如同握手般自然且舒適地操控方向盤。</p>
+                <h5>駕馭視野佳</h5>
+                <p>考量駕駛坐進車內的高度，透過前擋風玻璃位置的調整，達到盲區極小化，使駕駛視野更開闊，同步提升駕馭安全。</p>
+                <h5>更寧靜的車室</h5>
+                <p>採用最新三層結構的隔音材料，與引擎、變速箱的零件改革，將座艙的震動抑制在最小限度，提供乘客舒適安靜的感受。</p>
+            </div>
+            
+        </div>
+        <div class="recommend">
+            <div class="recommend-title">
+                <div class="h3">
+                    <h3>04以人為本</h3>
+                </div>
+                <div class="txt">
+                    <h4>使用者導向的貼心設計</h4>
+                    <p>藉由高度人性化的介面整合、傳遞車輛資訊，豐富日常駕駛體驗。從提升油耗表現到行李箱空間最適化，均細心考量，更加貼近使用者真正所需與習慣，並給予即時回應。</p>
+                </div>
+            </div>
+            <div class="recommend-pic">
+                <a href="#">
+                    <img src="car4.png" alt="car4">
+                    <i class="fa-brands fa-youtube"></i>
+                    <div class="recommend-bg"></div>
+                </a>
+            </div>
+            <div class="recommend-innovation">
+                <p class="make">因為我們做了這些革新</p>
+                <h5>優異油耗表現</h5>
+                <p>以AURIS為例，更強勁的高效引擎將熱效率提升40%，達到世界水準，屢屢突破燃油效率新境界。</p>
+                <h5>行李箱空間最適化</h5>
+                <p>以PRIUS為例，透過將電池位移到後座下方，讓行李廂擁有更大的空間。</p>
+                
+            </div>
+            
+        </div>
+        <div class="recommend">
+            <div class="recommend-title">
+                <div class="h3">
+                    <h3>05引以為傲</h3>
+                </div>
+                <div class="txt">
+                    <h4>極具吸引力的精心設計</h4>
+                    <p>TNGA 車款擁有讓人忍不住回的新潮外觀、讓駕駛充滿自信的駕馭快感!不僅讓車主能展現個人風格，也能讓擁有者都能引以為傲。</p>
+                </div>
+            </div>
+            <div class="recommend-pic">
+                <a href="#">
+                    <img src="car5.png" alt="car5">
+                    <i class="fa-brands fa-youtube"></i>
+                    <div class="recommend-bg"></div>
+                </a>
+            </div>
+            <div class="recommend-innovation">
+                <p class="make">因為我們做了這些革新</p>
+                <h5>設計概念</h5>
+                <p>TNGA低重心設計，不僅呈現更低伏的運動化外觀，更講究高品質內裝的一致性。</p>
+                <h5>環保概念</h5>
+                <p>為了對環境保護盡一份心力，我們全面提升傳統引擎、變速箱與油電複合動力的動力效能。</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
