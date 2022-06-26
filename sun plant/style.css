@@ -64,6 +64,9 @@
     padding: 2px 10px;
     z-index: -1;
 }
+.menu-list .menu-hover{
+    display: none;
+}
 .menu-hb i{
     color: 	#007500;
     font-size: 20px;
@@ -654,6 +657,40 @@
     .menu-list .new{
         top: -6px;
         right: 0;
+    }
+    .menu-list li:hover .menu-hover{
+        display: flex;
+        background-image: url(//cdn.shopify.com/s/files/1/0356/8343/4555/files/banner-menu2.png?v=1585551136);
+        width: 600px;
+        position: absolute;
+        top: 40px;
+        left: 0;
+        box-shadow: 12px 12px 7px #ccc8;
+        background-size: 100% 100%;
+    }
+    .menu-hover div{
+        padding: 10px;
+    }
+    .menu-hover p{
+        color: #006000;
+        font-weight: 600;
+        margin-left: 20px;
+        margin-top: 20px;
+    }
+    .menu-hover span{
+        display: block;
+        width: 100px;
+        height: 2px;
+        background-color: #006000;
+        margin-top: 30px;
+        margin-left: 20px;
+        margin-top: 20px;
+    }
+    .menu-hover li{
+        padding: 20px 20px;
+    }
+    .menu-hover a:hover{
+        color: #006000;
     }
     .menu-close{
         display: none;
