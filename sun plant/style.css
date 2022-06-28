@@ -767,6 +767,7 @@
     .important-describe .early{
         order: -1;
         width: 31.333333%;
+        text-align: right;
     }
     .important-describe .after{
         width: 31.333333%;
