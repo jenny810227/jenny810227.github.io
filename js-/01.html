@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .person {
+            display: flex;
+            flex-wrap: wrap;
+            margin: auto;
+            width: 1200px;
+            border: 2px solid #cc0;
+            box-sizing: border-box;
+            padding: 10px;
+            vertical-align: top;
+        }
+
+        .self {
+            width: 1200px;
+            border: 2px solid #fc0;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .self img {
+            display: block;
+            width: 400px;
+            margin: auto;
+        }
+
+        .data {
+            width: 1200px;
+            border: 2px solid #0cf;
+            padding: 60px 10px;
+            margin-bottom: 10px;
+            font-size: 30px;
+            font-family: Arial, Helvetica, sans-serif;
+            box-sizing: border-box;
+            padding-left: 40px;
+        }
+
+        #container {
+            width: 1200px;
+            border: 2px solid #0f0;
+        }
+
+        img {
+            width: 380px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="person">
+        <div class="self">
+            <img id="self" src="" alt="">
+
+        </div>
+        <div class="data">
+            <p id="name"></p>
+            <p id="email"></p>
+            <p id="school"></p>
+            <p id="interest"></p>
+        </div>
+        <div id="container">
+        </div>
+    </div>
+
+    <script>
+
+        const selfimg = "pika.png";
+        let self = document.getElementById("self");
+        self.setAttribute("src", selfimg);
+
+        let name = document.getElementById("name");
+        name.innerHTML = "姓名：皮卡丘";
+
+        let email = document.getElementById("email");
+        email.innerHTML = "Email：Pikachu@gmail.com";
+
+        let school = document.getElementById("school");
+        school.innerHTML = "學校：Build School";
+
+        let interest = document.getElementById("interest");
+        interest.innerHTML = "興趣：Electricity";
+
+        let container
+
+        const imageArray = [
+            "https://tw.portal-pokemon.com/play/resources/pokedex/img/pm/cf47f9fac4ed3037ff2a8ea83204e32aff8fb5f3.png",
+            "https://tw.portal-pokemon.com/play/resources/pokedex/img/pm/d0ee81f16175c97770192fb691fdda8da1f4f349.png",
+            "https://tw.portal-pokemon.com/play/resources/pokedex/img/pm/5794f0251b1180998d72d1f8568239620ff5279c.png"];
+
+        window.onload=function(){
+
+            container=document.getElementById("container"); 
+
+            imageArray.forEach((url, index) => {
+                let img = document.createElement("img");
+                img.setAttribute("src", url);
+                container.append(img);
+            }); 
+        }       
+        
+
+    </script>
+
+</body>
+
+</html>
