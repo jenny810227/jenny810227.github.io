@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="reset.css">
+    <style>
+        body{
+            font-family: Arial, Helvetica, sans-serif
+        }
+        .nav{
+            background-color: rgba(0,0,0,0.92);            
+        }
+        .nav-xs .nav-hb{
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+        }
+        .nav-hb i{
+            color: #fff;
+            margin: 10px;
+            font-size: 16px;
+        }
+        .nav-hb input:nth-child(1){
+            display: none;
+        }
+        .hb-close{
+            display: none;
+        } 
+        input:checked ~.nav-list{
+            width: 100%;
+            height: 100%;       
+            transition: height 1s;   
+        }
+        input:checked ~.hb-close{
+            display: block;
+        }
+        input:checked ~.hb-start{
+            display: none;
+        }
+        input:checked ~.search{
+            display: block;
+        }
+        input:checked ~.shop{
+            opacity: 0;
+        }
+        .search{
+            display: none;
+            position: absolute;
+            top: 36px;
+            background-color: rgba(0,0,0,0.92);
+            width: 100%;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #555;
+        }
+        .search i{
+            position: absolute;
+            color: #555;
+            top: -5px;
+            left: 10px;
+        }
+        #search{
+            border-radius: 10px;
+            width: 96%;
+            margin:0 2%;
+            background-color: #444;
+        }
+
+        .nav-xs .nav-list{
+            width: 0px;
+            height: 0px;
+            overflow: hidden;
+            color: #fff;
+            position: fixed;
+            top: 79px;
+            background-color:rgba(0,0,0,0.92);
+            transition: height 1s;
+        }
+        .nav-list li{
+            margin: 20px 50px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #555;
+        }
+        .nav-list a{
+            text-decoration: none;
+            color: #ccc;
+        }
+
+        .nav-xl{
+            display: none;
+        }
+        .commodity{
+            border-bottom: 1px solid #aaa;
+        }
+        .commodity ul{
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+        }
+        .commodity li{
+            margin: 15px 0;
+        }
+        .commodity a{
+            text-decoration: none;
+            color: #000;
+            font-weight: 600;
+        }
+        .commodity .money{
+            font-size: 16px;
+            font-weight: 500;
+        }
+        .content-title{
+            text-align: center;
+            background-color: #eee;
+            padding: 15px 0;
+        }
+        .content-title p{
+            font-size: 12px;
+        }
+        .content-title a{
+            text-decoration: none;
+            color: #0080FF;
+        }
+        .content-head{
+            text-align: center;
+            margin: 20px 0;
+        }
+        .content-head p{
+            color: #f00;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .content-head h3{
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .content-img{
+            margin: 0 20px;
+            text-align: center;
+        }
+        .content-img img{
+            width: 100%;
+        }
+        .content h4{
+            font-size: 14px;
+            font-weight: 600;
+            margin: 10px 0 10px 10px;
+        }
+        .content .bts{
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 10px;
+        }
+        .content .bts button{
+            margin: 2%;
+            width: 46%;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-sizing: border-box;
+            padding: 20px;
+        }
+        .content-color,.content-gb,.content-wifi{
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+            margin-top: 30px;
+        }
+        .content-color img{
+            width: 30px;
+        }
+        .content-color p{
+            font-size: 12px;
+        }
+        .content-gb .a{
+            margin: 20px;
+            background-color: #eee;
+            border-radius: 15px;
+            box-sizing: border-box;
+            padding: 15px;
+        }
+        .content-gb a{
+            text-decoration: none;
+            display: flex;
+            color: #000;
+            position: relative;
+        }
+        .content-gb .a strong{
+            font-weight:900;
+        }
+        .content-gb .a p{
+            font-size: 12px;
+            width: 90%;
+            line-height: 1.3;
+        }
+        .content-gb .a i{
+            position: absolute;
+            color: #0080FF;
+            font-size: 12px;
+            border: 2px solid #0080FF;
+            border-radius: 50%;
+            padding: 2px 6px;
+            box-sizing: border-box;
+            right: 0;
+        }
+        .content-gb .bts p:nth-child(1){
+            font-weight: 600;
+        }
+        .content-gb .bts p:nth-child(1) span:nth-child(1){
+            font-size: 30px;
+            font-weight: 500;
+        }
+        .content-gb .bts p:nth-child(1) span:nth-child(2){
+            vertical-align: super;
+            font-size: 14px;    
+        }
+        .content-gb .bts p:nth-child(2){
+            font-size: 12px;
+            color: #555;
+        }
+        .content-wifi .bts .bts-wifi{
+            padding: 35px 0;
+        }
+
+
+        
+        @media screen and (min-width:1200px){
+            .nav-xs{
+                display: none;
+            }
+            .nav-xl{
+                display: block;
+                margin: 0 auto;
+                max-width: 980px;
+            }
+            .nav-xl ul{
+                display: flex;
+                justify-content: space-between;
+            }
+            .nav-xl li{
+                padding: 15px 0;
+            }
+            .nav-xl li a{
+                color: #ccc;
+                font-size: 14px;
+                text-decoration: none;
+            }
+            .nav-xl li:nth-child(1) a {
+                font-size: 20px;
+            }
+            .nav-xl li a:hover{
+                color: #fff;
+            }
+
+            .commodity ul{
+                margin: 0 auto;
+                max-width: 980px;
+                display: flex;
+                justify-content: space-between;
+            }
+            .commodity .money{
+                font-size: 20px;
+                font-weight: 600;
+            }
+
+            .content-buy{
+                max-width: 960px;
+                margin: 0 auto;
+                position: relative;  
+                display: flex; 
+                margin-top: 40px;
+            }
+            .content-img{
+                width: 100%;
+            }
+            .content-head{
+                position: absolute;
+                left: 550px;
+                text-align: left;
+                margin-top: -5px;
+            }
+            .content-head h3{
+                font-size: 40px;
+            }
+            .content-choose{
+                margin-top: 70px;
+            }
+            .content-choose button:hover{
+                border-color: #555 ;
+            }
+        }
+    </style>
+    <script src="https://kit.fontawesome.com/7331b936ff.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <div class="nav">
+        <div class="nav-xs">
+            <div class="nav-hb">                
+                <input type="checkbox" id="hb">
+                <div class="hb-start">
+                    <label for="hb">
+                        <i class="fa-solid fa-bars"></i>
+                    </label>
+                </div>
+                <div class="hb-close">
+                    <label for="hb">
+                        <i class="fa-solid fa-x"></i>
+                    </label>
+                </div>            
+                <a href="#" class="logo"><i class="fa-brands fa-apple"></i></a>            
+                <a href="#" class="shop"><i class="fa-solid fa-bag-shopping"></i></a>
+                <div class="search">
+                    <i class="fa-solid fa-magnifying-glass"></i>                    
+                    <input type="search" placeholder="        搜尋 apple.com" id="search">                                      
+                </div>
+                <ul class="nav-list">                    
+                    <li>
+                        <a href="#">商店</a>
+                    </li>
+                    <li>
+                        <a href="#">Mac</a>
+                    </li>
+                    <li>
+                        <a href="#">iPad</a>
+                    </li>
+                    <li>
+                        <a href="#">iPhone</a>
+                    </li>
+                    <li>
+                        <a href="#">Watch</a>
+                    </li>
+                    <li>
+                        <a href="#">AirPods</a>
+                    </li>
+                    <li>
+                        <a href="#">TV和家庭</a>
+                    </li>
+                    <li>
+                        <a href="#">Apple獨家</a>
+                    </li>
+                    <li>
+                        <a href="#">配件</a>
+                    </li>
+                    <li>
+                        <a href="#">支援服務</a>
+                    </li>                                       
+                </ul>            
+            </div>
+            
+        </div>
+        <div class="nav-xl">
+            <ul>
+                <li>
+                    <a href="#"><i class="fa-brands fa-apple"></i></a>
+                </li>
+                <li>
+                    <a href="#">商店</a>
+                </li>
+                <li>
+                    <a href="#">Mac</a>
+                </li>
+                <li>
+                    <a href="#">iPad</a>
+                </li>
+                <li>
+                    <a href="#">iPhone</a>
+                </li>
+                <li>
+                    <a href="#">Watch</a>
+                </li>
+                <li>
+                    <a href="#">AirPods</a>
+                </li>
+                <li>
+                    <a href="#">TV和家庭</a>
+                </li>
+                <li>
+                    <a href="#">Apple獨家</a>
+                </li>
+                <li>
+                    <a href="#">配件</a>
+                </li>
+                <li>
+                    <a href="#">支援服務</a>
+                </li>
+                <li>
+                    <a href="#"><i class="fa-solid fa-magnifying-glass"></i></a>
+                </li><li>
+                    <a href="#"><i class="fa-solid fa-bag-shopping"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="commodity">
+        <ul>
+            <li>
+                <a href="">iPad Air</a>
+            </li>
+            <li class="money">
+                NT$17,900
+            </li>
+        </ul>
+    </div>
+    <div class="content">
+        <div class="content-title">
+            <p>可申請最長達 12 個月的零利率分期付款。<a href="#">進一步了解 ></a></p>
+        </div>
+        <div class="content-buy">
+            <div class="content-head">
+                <p>全新</p>
+                <h3>購買 iPad Air</h3>
+            </div>
+            <div class="content-img">
+                <img src="https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/ipad-air-select-wifi-blue-202203?wid=940&hei=1112&fmt=png-alpha&.v=1645065732688" alt="">
+            </div>
+            <div class="content-choose">
+                <div class="content-color">
+                    <h4>外觀</h4>
+                    <div class="bts">
+                        <button class="bts-grey">
+                            <img src="https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/finish-spacegray-202203?wid=208&amp;hei=208&amp;fmt=png-alpha&amp;.v=1645072286860" alt="">
+                            <p>太空灰色</p>
+                        </button>
+                        <button class="bts-pink">
+                            <img src="https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/finish-pink-202203?wid=208&amp;hei=208&amp;fmt=jpeg&amp;qlt=90&amp;.v=1645072286848" alt="">
+                            <p>粉紅色</p>
+                        </button>
+                        <button class="bts-purple">
+                            <img src="https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/finish-purple-202203?wid=208&amp;hei=208&amp;fmt=jpeg&amp;qlt=90&amp;.v=1645072286861" alt="">
+                            <p>紫色</p>
+                        </button>
+                        <button class="bts-blue">
+                            <img src="https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/finish-blue-202203?wid=208&amp;hei=208&amp;fmt=jpeg&amp;qlt=90&amp;.v=1645072286826" alt="">
+                            <p>藍色</p>
+                        </button>
+                        <button class="bts-star">
+                            <img src="https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/finish-starlight-202203?wid=204&amp;hei=204&amp;fmt=jpeg&amp;qlt=90&amp;.v=1645049661304" alt="">
+                            <p>星光色</p>
+                        </button>
+                    </div>
+                    
+                </div>
+                <div class="content-gb">
+                    <h4>儲存裝置</h4>
+                    <div class="a">
+                        <a href="">
+                            <p><strong>提前為日後預留空間。</strong>你的 iPad Air 儲存空間愈大， 你就有愈多空間儲存數位內容，滿足今日所需，也滿足未來需求。</p>
+                            <i class="fa-solid fa-info"></i>
+                        </a>
+                    </div>
+                    <div class="bts">
+                        <button class="bts-64">
+                            <p><span>64</span>GB<span>1</span></p>
+                            <p><span>NT$17,900</span> 起</p>
+                        </button>
+                        <button class="bts-256">
+                            <p><span>256</span>GB<span>1</span></p>
+                            <p><span>NT$22,900</span> 起</p>
+                        </button>
+                    </div>
+                </div>
+                <div class="content-wifi content-gb">
+                    <h4>連線能力</h4>
+                    <div class="a">
+                        <a href="">
+                            <p><strong>兩種快速的方式，讓你時時保持聯繫。</strong>每部 iPad Air 都可連接到 Wi-Fi 網路。Wi-Fi + 行動網路機型則讓你在無法使用 Wi-Fi 時，也能連上線。</p>
+                            <i class="fa-solid fa-info"></i>
+                        </a>
+                    </div>
+                    <div class="bts">
+                        <button class="bts-wifi">
+                            <p>Wi-Fi</p>
+                            <p class="money1">NT$22,900</p>
+                        </button>
+                        <button class="bts-web">
+                            <p>Wi-Fi + 行動網路</p>
+                            <p class="money2">NT$27,900</p>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let img=document.querySelector('.content-img img')
+        let grey=document.querySelector('.bts-grey')
+        let pink=document.querySelector('.bts-pink')
+        let purple=document.querySelector('.bts-purple')
+        let blue=document.querySelector('.bts-blue')
+        let star=document.querySelector('.bts-star')
+        let colorbts=document.querySelectorAll('.bts>button')
+
+        
+        let check=false
+
+         
+
+        grey.addEventListener('click',()=>{
+            img.src='https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/ipad-air-select-cell-spacegray-202203?wid=940&hei=1112&fmt=png-alpha&.v=1645055392934'
+            check=true
+            color()           
+            grey.style.outline='3px solid #0080FF'
+        })
+        pink.addEventListener('click',()=>{
+            img.src='https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/ipad-air-select-cell-pink-202203?wid=940&hei=1112&fmt=png-alpha&.v=1645050580705'
+            color()
+            pink.style.outline='3px solid #0080FF'          
+        })
+        purple.addEventListener('click',()=>{
+            img.src='https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/ipad-air-select-cell-purple-202203?wid=940&hei=1112&fmt=png-alpha&.v=1645066504390'
+            color()
+            purple.style.outline='3px solid #0080FF'
+        })
+        blue.addEventListener('click',()=>{
+            img.src='https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/ipad-air-select-cell-blue-202203?wid=940&hei=1112&fmt=png-alpha&.v=1645050189205'
+            color()
+            blue.style.outline='3px solid #0080FF'
+        })
+        star.addEventListener('click',()=>{
+            img.src='https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/ipad-air-select-cell-starlight-202203?wid=940&hei=1112&fmt=png-alpha&.v=1645895139238'
+            color()
+            star.style.outline='3px solid #0080FF'
+        })
+
+        function color(event){
+            colorbts.forEach(x=>{                
+                x.style.outline='none'  
+                x.addEventListener('mouseover',()=>{
+                    x.style.borderColor='#555' 
+                })               
+                x.addEventListener('mouseout',()=>{
+                    x.style.borderColor='#ccc'
+                })                                                   
+        })
+        }
+
+        let money=document.querySelector('.money')
+        let money1=document.querySelector('.money1')
+        let money2=document.querySelector('.money2')
+        
+        let coin1='NT$17,900'
+        let coin2='NT$22,900'
+        let coin3='NT$27,900'
+
+        let bts64=document.querySelector('.bts-64')
+        let bts256=document.querySelector('.bts-256')
+        let btswifi=document.querySelector('.bts-wifi')
+        let btsweb=document.querySelector('.bts-web')
+
+        bts64.addEventListener('click',()=>{
+            money.innerHTML=coin1
+            money1.innerHTML=coin1
+            money2.innerHTML=coin2
+            bts64.style.outline='3px solid #0080FF'
+            bts256.style.outline='none'
+        })
+        bts256.addEventListener('click',()=>{
+            money.innerHTML=coin2
+            money1.innerHTML=coin2
+            money2.innerHTML=coin3
+            bts64.style.outline='none'
+            bts256.style.outline='3px solid #0080FF'
+        })
+        btswifi.addEventListener('click',()=>{
+            money.innerHTML=money1.innerHTML
+            btswifi.style.outline='3px solid #0080FF'
+            btsweb.style.outline='none'
+        })
+        btsweb.addEventListener('click',()=>{
+            money.innerHTML=money2.innerHTML
+            btswifi.style.outline='none'
+            btsweb.style.outline='3px solid #0080FF'
+        })
+
+
+    </script>
+
+
+</body>
+</html>
