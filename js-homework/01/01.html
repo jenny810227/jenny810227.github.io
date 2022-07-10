@@ -118,13 +118,14 @@
         let btns=document.querySelectorAll('.number > button')
 
         let random
+        start()
         produce.addEventListener('click',()=>{
             if(correct.innerText==''){
-                random=getRandomInt(0,100)
+                random=getRandomInt(1,100)
                 correct.innerText=random
-            }            
+            }
+            run()            
         })
-
         
         btns.forEach(btn=>{
             btn.addEventListener('click',(event)=>{
@@ -157,15 +158,11 @@
         }
 
 
-        let max
-        let min
-        start()
-        run()
+        let max=100
+        let min=0        
 
-        function start(){
-            max=100
-            min=0
-            run()
+        function start(){           
+            h1.innerText=`請按產生數字`
         }
         
         function checknum(){
@@ -193,6 +190,7 @@
         }
 
         function run(){
+
             h1.innerText=`${min}~${max}`
         }
 
