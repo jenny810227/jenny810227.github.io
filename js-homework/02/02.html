@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .game{
+            font-family: Arial, Helvetica, sans-serif;
+            margin-top: 40px;
+        }
+        .title{
+            width: 900px;
+            border: 1px solid #aaa;
+            margin: auto;
+            border-radius: 10px;
+        }
+        .title button{
+            box-sizing: border-box;
+            background-color: #fff;
+            width: 286px;
+            border: none;
+            font-size: 30px;
+            margin: 5px;
+        }
+        .title button:nth-child(2){
+            border-left: 1px solid #aaa;
+            border-right: 1px solid #aaa;
+        }
+        .list{
+            width: 900px;
+            margin: 30px auto;
+            border: 1px solid #aaa;
+            border-radius: 10px;
+            height: 300px;
+            overflow: auto;
+        }
+        .list p{
+            height: 60px;
+            box-sizing: border-box;
+            border-bottom: 1px solid #aaa;
+            position: relative;
+            font-size: 20px;
+        }
+        .list .aabb{
+            background-color: #f00;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            position: absolute;
+            margin-top: 13px;
+            margin-left: 20px;
+        }
+        .list .aaaa{
+            background-color: #0a0;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            position: absolute;
+            margin-top: 13px;
+            margin-left: 20px;
+        }
+        .list .number{
+            position: absolute;
+            top: 19px;
+            left: 100px;
+            
+        }
+        .guess{
+            display: flex;
+            border: 1px solid #aaa;
+            width: 900px;
+            border-radius: 5px;
+            margin: auto;
+            
+        }
+        .guess p{
+            background-color: #eee;
+            padding: 10px 20px;
+            border-right: 1px solid #aaa;
+        }
+        .guess input{
+            width: 750px;
+            border: none;
+        }
+        .guess .guessbtn{
+            background-color: #fff;
+            border: none;
+            border-left: 1px solid #aaa;
+            padding: 10px 20px;
+        }
+
+    </style>
+    
+</head>
+<body>
+    <div class="game">
+        <div class="title">
+            <button class="start">開始</button>
+            <button class="reset">放棄重來</button>
+            <button class="view">看答案</button>
+        </div>
+        <div class="list">
+            
+        </div>
+        <div class="guess">
+            <p>猜答案</p>
+            <input type="text">
+            <button class="guessbtn">猜!</button>
+        </div>
+
+    </div>
+
+
+
+    <script>
+        let start=document.querySelector('.start')
+        let reset=document.querySelector('.reset')
+        let view=document.querySelector('.view')
+        let list=document.querySelector('.list')
+        let input=document.querySelector('input')
+        let guessbtn=document.querySelector('.guessbtn')
+
+        let result
+        resetgame()
+        start.addEventListener('click',()=>{
+            randomnum()
+        })
+
+        reset.addEventListener('click',()=>{
+            startcheck()
+            resetall()
+        })
+        
+        view.addEventListener('click',()=>{
+            startcheck()
+            viewall()
+        })
+        guessbtn.addEventListener('click',()=>{
+            startcheck()
+            check()
+        })
+
+        function randomnum(){
+            list.innerHTML=''
+            for(let i=0;i<4;i++){
+                if(result.length<4){
+                    let num=getRandomInt(10).toString()
+                    if(!result.includes(num)){
+                        result.push(num)
+                    }
+                    else{i--}
+                }
+            }
+            input.disabled=false
+            alert(`輸入4個不重複數字`)
+        }
+
+        function startcheck(){
+            if(result.length<4){
+                alert(`請按開始`)
+            }
+        }
+
+        function resetgame(){
+            result=[]
+            input.disabled=true
+        }
+
+        function resetall(){
+            if(result.length==4){
+                list.innerHTML=''
+                resetgame()
+                alert(`請重新開始遊玩`)
+            }
+            
+        }
+        
+        function viewall(){   
+            if(result.length==4){
+                let random=''
+                for(let i=0;i<result.length;i++){
+                    random+=result[i]
+                }         
+                alert(random)
+            }
+        }
+
+        
+        //let answer=[]
+        //let answer2
+        function check(){
+            if(input.disabled==false){
+                let answer=input.value.split('')
+                let answer2=answer.filter((x, index, arr) => arr.indexOf(x) == index)                
+                if(answer.length!=4||answer2.length!=4){
+                    alert(`輸入錯誤`)
+                    // console.log(answer2)                
+                }
+                else{
+                    let includes=answer.filter(x=>result.includes(x))
+                    let a=includes.filter(x=>answer.indexOf(x)==result.indexOf(x)).length
+                    let b=includes.length-a
+                    let p=document.createElement('p')
+                    if(a==4){
+                        p.innerHTML=`<span class="aaaa">${a}A${b}B</span><span class="number">${input.value}</span>`
+                        alert(`恭喜，答對囉`)
+                        resetgame()
+                    }
+                    else{
+                        p.innerHTML=`<span class="aabb">${a}A${b}B</span><span class="number">${input.value}</span>`
+                    } 
+                    list.append(p)
+                }
+                input.value='' 
+                //list.scrollTop=(list.scrollTop)+60
+                list.scrollTop=list.scrollHeight                
+            }           
+        }
+
+
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * max)
+        }
+      
+    </script>
+
+    
+
+
+</body>
+</html>

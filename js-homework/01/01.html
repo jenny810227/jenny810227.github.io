@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .game{
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 40px;
+        }
+        .title{
+            width: 500px;
+            padding: 50px 0;
+            margin: auto;
+            box-sizing: border-box;
+            border: 1px solid #000;            
+        }
+        .produce{
+            border: none;
+            background-color: #0af;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 30px;
+            margin-top: 40px;
+            border-radius: 5px;
+        }
+        input{
+            display: block;
+            width: 250px;
+            height: 30px;
+            border: 1px solid #aaa;
+            margin: auto;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        .number{
+            display: flex;
+            flex-wrap: wrap;
+            width: 150px;
+            margin: auto;
+            
+        }
+        .number button,.clear button,.check button{
+            background-color: #000;
+            color: #fff;
+            width: 40px;
+            box-sizing: border-box;
+            padding: 5px;
+            font-size: 26px;
+            margin: 2px;
+        }
+        .number button:nth-child(10){
+            margin-left: 46px;
+        }
+        .clear button{
+            color: #f00;
+            position: absolute;
+            margin-top: -47px;
+            margin-left: -73px;
+        }
+        .check button{
+            color: #0f0;
+            position: absolute;
+            margin-top: -47px;
+            margin-left: 15px;
+        }
+        .correct{
+            opacity: 0;
+        }
+        .correct:hover{
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="game">
+        <div class="title">
+            <h1></h1>
+        </div>
+    
+        <button class="produce">產生數字</button>
+        <input type="text">
+        <div class="number">
+            <button>1</button>
+            <button>2</button>
+            <button>3</button>
+            <button>4</button>
+            <button>5</button>
+            <button>6</button>
+            <button>7</button>
+            <button>8</button>
+            <button>9</button>
+            <button>0</button>
+        </div>
+        <div class="clear">
+            <button>X</button>
+        </div>
+        <div class="check">
+            <button>V</button>
+        </div>
+        <div class="correct"></div>
+    </div>
+    
+    <script>
+        let h1=document.querySelector('h1')
+        let input=document.querySelector('input')
+        let produce=document.querySelector('.produce')
+        let correct=document.querySelector('.correct')
+        let clear=document.querySelector('.clear')
+        let check=document.querySelector('.check')
+        let btns=document.querySelectorAll('.number > button')
+
+        let random
+        produce.addEventListener('click',()=>{
+            if(correct.innerText==''){
+                random=getRandomInt(0,100)
+                correct.innerText=random
+            }            
+        })
+
+        
+        btns.forEach(btn=>{
+            btn.addEventListener('click',(event)=>{
+                inputBtn(event)
+                startcheck()
+            })
+        })
+        clear.addEventListener('click',()=>{
+            startcheck()
+            clearnum()            
+        })
+        check.addEventListener('click',()=>{
+            startcheck()
+            checknum()            
+        })        
+        
+        function startcheck(){
+            if(correct.innerText==''){
+                alert('請按產生數字')
+                clearnum()
+            }
+        }
+
+        function inputBtn(event){
+            input.value+=event.target.innerText
+        }
+
+        function getRandomInt(min,max) {
+            return Math.floor(Math.random() * (max - min) + min)
+        }
+
+
+        let max
+        let min
+        start()
+        run()
+
+        function start(){
+            max=100
+            min=0
+            run()
+        }
+        
+        function checknum(){
+            if(parseInt(input.value)>=max||parseInt(input.value)<=min){
+                alert('請輸入正確區間數字')
+                clearnum()
+            }
+            else if(parseInt(input.value)<random){
+                min=input.value
+                run()
+                clearnum()
+            }
+            else if(parseInt(input.value)>random){
+                max=input.value
+                run()
+                clearnum()
+            }
+            else if(parseInt(input.value)==random){
+                alert('恭喜你答對了')
+                clearnum()
+                start()
+                correct.innerText=''
+            }
+            
+        }
+
+        function run(){
+            h1.innerText=`${min}~${max}`
+        }
+
+
+        function clearnum(){
+            input.value=''
+        }
+    </script>
+</body>
+</html>
