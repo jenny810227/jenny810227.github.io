@@ -253,6 +253,12 @@
                 color: #fff;
             }
 
+            .commodity{
+                position: sticky;
+                top: 0;
+                z-index: 1;
+                background-color: #fff;
+            }
             .commodity ul{
                 margin: 0 auto;
                 max-width: 980px;
@@ -270,6 +276,9 @@
                 position: relative;  
                 display: flex; 
                 margin-top: 40px;
+            }
+            .content-title a:hover{
+                text-decoration: underline;
             }
             .content-img{
                 width: 100%;
@@ -399,7 +408,7 @@
                 <a href="#">iPad Air</a>
             </li>
             <li class="money">
-                NT$17,900
+                NT$17,900 起
             </li>
         </ul>
     </div>
@@ -413,7 +422,7 @@
                 <h3>購買 iPad Air</h3>
             </div>
             <div class="content-img">
-                <img src="https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/ipad-air-select-wifi-blue-202203?wid=940&hei=1112&fmt=png-alpha&.v=1645065732688" alt="">
+                <img src="https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/ipad-air-select-202203?wid=3530&hei=4000&fmt=jpeg&qlt=90&.v=1645665079887" alt="">
             </div>
             <div class="content-choose">
                 <div class="content-color">
@@ -544,15 +553,24 @@
         let btswifi=document.querySelector('.bts-wifi')
         let btsweb=document.querySelector('.bts-web')
 
+        btswifi.style.outline='none'
+        btsweb.style.outline='none'
+
         bts64.addEventListener('click',()=>{
-            money.innerHTML=coin1
+            if(btsweb.style.outline!='none'){
+                money.innerHTML=coin2
+            }
+            else{money.innerHTML=coin1}            
             money1.innerHTML=coin1
             money2.innerHTML=coin2
             bts64.style.outline='3px solid #0080FF'
             bts256.style.outline='none'
         })
         bts256.addEventListener('click',()=>{
-            money.innerHTML=coin2
+            if(btsweb.style.outline!='none'){
+                money.innerHTML=coin3
+            }
+            else{money.innerHTML=coin2}            
             money1.innerHTML=coin2
             money2.innerHTML=coin3
             bts64.style.outline='none'
@@ -569,6 +587,9 @@
             btsweb.style.outline='3px solid #0080FF'
         })
 
+        function check(){
+            
+        }
 
     </script>
 
