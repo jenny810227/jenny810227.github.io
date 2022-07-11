@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,13 +6,898 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-      
+    <link rel="stylesheet" href="reset.css">
+    <style>
+        body{
+            font-family: Arial, Helvetica, sans-serif
+        }
+        .nav{
+            background-color: rgba(0,0,0,0.92);            
+        }
+        .nav-xs .nav-hb{
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+        }
+        .nav-hb i{
+            color: #fff;
+            margin: 10px;
+            font-size: 16px;
+        }
+        .nav-hb input:nth-child(1){
+            display: none;
+        }
+        .hb-close{
+            display: none;
+        } 
+        input:checked ~.nav-list{
+            width: 100%;
+            height: 100%;       
+            transition: height 1s;   
+        }
+        input:checked ~.hb-close{
+            display: block;
+        }
+        input:checked ~.hb-start{
+            display: none;
+        }
+        input:checked ~.shop{
+            opacity: 0;
+        }
+        
+        .search i{
+            position: absolute;
+            color: #555;
+            top: -6px;
+            left: 10px;
+        }
+        #search{
+            border-radius: 10px;
+            width: 96%;
+            margin:0 2%;
+            background-color: #444;
+        }
+
+        .nav-xs .nav-list{
+            width: 100%;
+            height: 0px;
+            overflow: hidden;
+            color: #fff;
+            position: fixed;
+            top: 36px;
+            background-color:rgba(0,0,0,0.92);
+            transition: height 1s;
+        }
+        .nav-list li{
+            margin: 20px 50px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #555;
+        }
+        .nav-list li:nth-child(1){
+            width: 100%;
+            padding-bottom: 15px;
+            margin: 0;
+            border-bottom: 1px solid #555;
+        }
+        .nav-list a{
+            text-decoration: none;
+            color: #ccc;
+        }
+
+        .nav-xl{
+            display: none;
+        }
+        .commodity{
+            border-bottom: 1px solid #aaa;
+            box-sizing: border-box;
+            padding: 0 10px;
+        }
+        .commodity ul{
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+        }
+        .commodity li{
+            margin: 15px 0;
+        }
+        .commodity a{
+            text-decoration: none;
+            color: #000;
+            font-weight: 600;
+        }
+        .commodity-a li{
+            font-size: 12px;
+            font-weight: 500;
+            margin: 0 10px;
+        }
+        .commodity-a li a:hover{
+            color: #0080FF;
+        }
+        
+        .content-head{
+            text-align: left;
+            margin: 20px 20px;
+        }
+        .content-head p{
+            color: #bf4800;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .content-head h3{
+            font-size: 20px;
+            font-weight: 600;
+        }
+        .content-img{
+            margin: 0 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .content-img a{
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            margin: 30px 0;
+            color: #0080FF;
+        }
+        .content-img img{
+            width: 60%;
+        }
+        .content h4{
+            font-size: 14px;
+            font-weight: 600;
+            margin: 10px 0 10px 10px;
+        }
+        .content-change {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 30px;
+            margin:0 20px;
+            line-height: 1.5;
+        }
+        .content-change h4{
+            font-size: 12px;
+            margin: 20px 0;
+            font-weight: 900;
+        }
+        .content-change p{
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+        .content-change a{
+            text-decoration: none;
+            color: #0080FF;
+            font-size: 12px;
+        }
+        .content-change a:hover{
+            text-decoration: underline;
+        }
+        .content-text{
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ccc;
+            box-sizing: border-box;
+            margin: 0 15px 20px;
+            line-height: 1.5;
+        }
+        .content-text li{
+            margin: 15px 0 15px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #888;
+        }
+        .content .bts{
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 10px;
+        }
+        .content .bts button{
+            text-align: left;
+            margin: 2% ;
+            width: 120%;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-sizing: border-box;
+            padding: 30px 20px;
+            display: flex;
+            justify-content: space-between;
+
+        }
+        .content-gb,.content-ssd,.content-power{
+            margin: 20px 15px 0;
+        }        
+        
+        .content-gb a{
+            text-decoration: none;
+            color:#0080FF;
+            font-size: 12px;
+            margin:5px 0 15px 10px;
+            display: inline-block;
+        }
+        .content-gb a:hover{
+            text-decoration: underline;
+        }
+        .content-gb .bts p:nth-child(1){
+            font-weight: 900;
+            font-size: 16px;
+        }
+        .content-gb .bts p:nth-child(2){
+            font-size: 18px;
+            color: #888;
+        }
+        .content-ssd a{
+            text-decoration: none;
+            color:#0080FF;
+            font-size: 12px;
+            margin:5px 0 15px 10px;
+            display: inline-block;
+        }
+        .content-ssd a:hover{
+            text-decoration: underline;
+        }
+        .content-ssd .bts p:nth-child(1){
+            font-weight: 900;
+            font-size: 16px;
+        }
+        .content-ssd .bts p:nth-child(2){
+            font-size: 18px;
+            color: #888;
+        }
+        
+        .content-power{
+            padding-bottom: 140px;
+        }
+        .content-power a{
+            text-decoration: none;
+            color:#0080FF;
+            font-size: 12px;
+            margin:5px 0 15px 10px;
+            display: inline-block;
+        }
+        .content-power a:hover{
+            text-decoration: underline;
+        }
+        .content-power .bts p:nth-child(1){
+            font-weight: 900;
+            font-size: 16px;
+        }
+        .content-power .bts p:nth-child(2){
+            font-size: 14px;
+            color: #888;
+        }
+
+        .money-xl{
+            display: none;
+        }
+
+
+
+        
+        @media screen and (min-width:1200px){
+            .nav-xs{
+                display: none;
+            }
+            .nav-xl{
+                display: block;
+                margin: 0 auto;
+                max-width: 980px;
+            }
+            .nav-xl ul{
+                display: flex;
+                justify-content: space-between;
+            }
+            .nav-xl li{
+                padding: 15px 0;
+            }
+            .nav-xl li a{
+                color: #ccc;
+                font-size: 14px;
+                text-decoration: none;
+            }
+            .nav-xl li:nth-child(1) a {
+                font-size: 20px;
+            }
+            .nav-xl li a:hover{
+                color: #fff;
+            }
+
+            .commodity ul{
+                margin: 0 auto;
+                max-width: 980px;
+                display: flex;
+                justify-content: space-between;
+            }
+            .commodity .money{
+                font-size: 20px;
+                font-weight: 600;
+            }
+
+            .content-buy{
+                max-width: 960px;
+                margin: 0 auto;
+                position: relative;  
+                display: flex; 
+                margin-top: 40px;
+            }
+
+            .content-img {
+                align-items: center; 
+                position: sticky;
+                top: 20px;       
+                z-index: 1;
+            }
+            .content-img a:hover{
+                text-decoration: underline;
+            }
+            .content-img img{
+                width: 90%;
+                position: sticky;
+                top: 30px;       
+                z-index: 1;
+            }  
+            .content-img a{
+                position: sticky;
+                top: 290px;       
+                z-index: 1;
+            } 
+            .content-head{
+                position: absolute;
+                left: 460px;
+                text-align: left;
+                margin-top: -5px;
+            }
+            .content-head h3{
+                font-size: 34px;
+            }
+            .content-choose{
+                position: relative;
+                margin-top: 70px;
+                margin-right: 70px;
+                
+            }
+            .content-choose button:hover{
+                border-color: #555 ;
+            }
+            .money-xl{
+                display: block;
+                position: fixed;
+                bottom: 0;
+                background-color: #eee;
+                width: 100%;
+                height: 125px;
+                border-top: 1px solid #ddd;
+            }
+            .money-xl-wrap{
+                display: flex;
+                max-width: 960px;
+                margin: 0 auto;
+                position: relative;
+            } 
+            .money-xl-wrap .transport i{
+                position: absolute;
+                top: 40px;
+            }
+            .money-xl-wrap .transport h5{
+                position: absolute;
+                top: 40px;
+                left: 30px;
+                font-size: 14px;
+                font-weight: 900;
+            }
+            .money-xl-wrap .transport p{
+                position: absolute;
+                top: 60px;
+                left: 30px;
+                font-size: 14px;
+            }
+            .money-xl-wrap .take i{
+                position: absolute;
+                top: 40px;
+                left: 230px;
+            }
+            .money-xl-wrap .take h5{
+                position: absolute;
+                top: 40px;
+                left: 260px;
+                font-size: 14px;
+                font-weight: 900;
+            }
+            .money-xl-wrap .take p{
+                position: absolute;
+                top: 60px;
+                left: 260px;
+                width: 160px;
+                font-size: 14px;
+                line-height: 1.3;
+            }
+            .money-xl-wrap .money{
+                position: absolute;
+                top: 20px;
+                right: 150px;
+                font-size: 26px;
+                font-weight: 600;
+            }
+            .money-xl-wrap .tax{
+                position: absolute;
+                top: 60px;
+                right: 150px;
+                font-size: 14px;
+            }
+            .money-xl-wrap .cash i{                
+                color: #0080FF;
+                font-size: 12px;
+                border: 2px solid #0080FF;
+                border-radius: 50%;
+                padding: 2px 6px;
+                box-sizing: border-box;
+                right: 0;                
+            }
+            .money-xl-wrap .cash a{
+                text-decoration: none;
+                font-size: 14px;
+                color: #0080FF;
+                position: absolute;
+                display: flex;
+                align-items: center;
+                top: 80px;
+                right: 150px;
+            }
+            .money-xl-wrap .cash p{
+                padding-left: 10px;
+            }
+            .money-xl-wrap .add{
+                font-size: 16px;
+                box-sizing: border-box;
+                padding: 6px 15px;
+                background-color: #0080FF70;
+                border-radius: 10px;
+                color: #fff;
+                border: none;
+                position: absolute;
+                right: 30px;
+                top: 20px;
+            }
+            .money-xl-wrap .save i{
+                font-size: 24px;
+                color: #0080FF;
+                position: absolute;
+                right: 0;
+                top: 20px;
+            }            
+            .save-hover{
+                display: none;
+                background-color: #ddd;
+                padding: 15px 40px;
+                font-size: 14px;
+                border-radius: 10px;
+                position: absolute;
+                right: -80px;
+                top: -45px;
+            }
+            .save:hover ~.save-hover{
+                display: block;
+            }
+            .money-xl-wrap .save-hover div{
+                border-color: #ddd transparent transparent transparent ;
+                border-style: solid solid solid solid;
+                border-width: 10px;
+                width: 0;
+                position: absolute;
+                top: 44px;
+                left: 79px;
+            }
+        }
+    </style>
+    <script src="https://kit.fontawesome.com/7331b936ff.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    
+
+    <div class="nav">
+        <div class="nav-xs">
+            <div class="nav-hb">                
+                <input type="checkbox" id="hb">
+                <div class="hb-start">
+                    <label for="hb">
+                        <i class="fa-solid fa-bars"></i>
+                    </label>
+                </div>
+                <div class="hb-close">
+                    <label for="hb">
+                        <i class="fa-solid fa-x"></i>
+                    </label>
+                </div>            
+                <a href="#" class="logo"><i class="fa-brands fa-apple"></i></a>            
+                <a href="#" class="shop"><i class="fa-solid fa-bag-shopping"></i></a>
+                
+                <ul class="nav-list"> 
+                    <li>
+                        <div class="search">
+                            <i class="fa-solid fa-magnifying-glass"></i>                    
+                            <input type="search" placeholder="        搜尋 apple.com" id="search">                                      
+                        </div>
+                    </li>                   
+                    <li>
+                        <a href="#">商店</a>
+                    </li>
+                    <li>
+                        <a href="./mac.html">Mac</a>
+                    </li>
+                    <li>
+                        <a href="./ipad.html">iPad</a>
+                    </li>
+                    <li>
+                        <a href="./iphone.html">iPhone</a>
+                    </li>
+                    <li>
+                        <a href="#">Watch</a>
+                    </li>
+                    <li>
+                        <a href="#">AirPods</a>
+                    </li>
+                    <li>
+                        <a href="#">TV和家庭</a>
+                    </li>
+                    <li>
+                        <a href="#">Apple獨家</a>
+                    </li>
+                    <li>
+                        <a href="#">配件</a>
+                    </li>
+                    <li>
+                        <a href="#">支援服務</a>
+                    </li>                                       
+                </ul>            
+            </div>
+            
+        </div>
+        <div class="nav-xl">
+            <ul>
+                <li>
+                    <a href="#"><i class="fa-brands fa-apple"></i></a>
+                </li>
+                <li>
+                    <a href="#">商店</a>
+                </li>
+                <li>
+                    <a href="./mac.html">Mac</a>
+                </li>
+                <li>
+                    <a href="./ipad.html">iPad</a>
+                </li>
+                <li>
+                    <a href="./iphone.html">iPhone</a>
+                </li>
+                <li>
+                    <a href="#">Watch</a>
+                </li>
+                <li>
+                    <a href="#">AirPods</a>
+                </li>
+                <li>
+                    <a href="#">TV和家庭</a>
+                </li>
+                <li>
+                    <a href="#">Apple獨家</a>
+                </li>
+                <li>
+                    <a href="#">配件</a>
+                </li>
+                <li>
+                    <a href="#">支援服務</a>
+                </li>
+                <li>
+                    <a href="#"><i class="fa-solid fa-magnifying-glass"></i></a>
+                </li><li>
+                    <a href="#"><i class="fa-solid fa-bag-shopping"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="commodity">
+        <ul>
+            <li>
+                <a href="#">MacBook Air</a>
+            </li>
+            <li>
+                <ul class="commodity-a">
+                    <li>
+                        <a href="#">產品概覽</a>
+                    </li>
+                    <li>
+                        <a href="#">macOS</a>
+                    </li>
+                    <li>
+                        <a href="#">比較規格</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="content">        
+        <div class="content-buy">
+            <div class="content-head">
+                <p>全新</p>
+                <h3>自訂你的 MacBook Air - 銀‍色</h3>
+            </div>
+            <div class="content-img">
+                <img src="https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/macbook-air-silver-config-20220606?wid=820&hei=498&fmt=jpeg&qlt=90&.v=1654122880388" alt="">
+                <a href="#">瀏覽圖庫</a>
+            </div>
+            <div class="content-choose">
+                <div class="content-text">
+                    <ul>
+                        <li>
+                            Apple M2 晶片配備 8 核心 CPU、10 核心 GPU 與 16 核心神經網路引擎
+                        </li>
+                        <li>
+                            8GB 統一記憶體
+                        </li>
+                        <li>
+                            2TB SSD 儲存裝置
+                        </li>
+                        <li>
+                            具備原彩顯示的 13.6 吋 Liquid Retina 顯示器
+                        </li>
+                        <li>
+                            1080p FaceTime HD 相機
+                        </li>
+                        <li>
+                            MagSafe 3 充電埠
+                        </li>
+                        <li>
+                            兩個 Thunderbolt / USB 4 埠
+                        </li>
+                        <li>
+                            35W 雙 USB-C 埠小型電源轉接器
+                        </li>
+                        <li>
+                            含 Touch ID 的背光巧控鍵盤 - 中文 (注音)
+                        </li>
+                        <li>
+                            配備 M2 晶片的 MacBook Air - 推出日期，敬請期待。
+                        </li>
+                        <li>
+                            每位顧客限購 2 部配‍備 M2 晶‍片的 MacBook Air。
+                        </li>
+                    </ul>
+                </div>
+                <div class="content-change">
+                    <h4>加入換購方案</h4>
+                    <p>以你符合條件的電腦換購全新 Mac，獲享折抵優惠。你也可選擇免額外付費回收**。</p>
+                    <a href="#">開始進行</a>
+                </div>
+                <div class="content-gb">
+                    <h4>記憶體</h4>
+                    <a href="#">你需要多少記憶體？</a>
+                    <div class="bts">
+                        <button class="bts-8g">
+                            <p>8GB 統一記憶體</p>
+                            <p class="p-8g"></p>
+                        </button>
+                        <button class="bts-16g">
+                            <p>16GB 統一記憶體</p>
+                            <p class="p-16g">+NT$6,000</p>
+                        </button>
+                        <button class="bts-24g">
+                            <p>24GB 統一記憶體</p>
+                            <p class="p-24g">+NT$12,000</p>
+                        </button>
+                    </div>                        
+                </div>
+                <div class="content-ssd">
+                    <h4>儲存裝置</h4>
+                    <div class="a">
+                        <a href="#">
+                            你需要多少儲存空間？
+                        </a>
+                    </div>
+                    <div class="bts">
+                        <button class="bts-512g">
+                            <p>512GB SSD 儲存裝置</p>
+                            <p class="p-512g"></p>
+                        </button>
+                        <button class="bts-1t">
+                            <p>1TB SSD 儲存裝置</p>
+                            <p class="p-1t">+NT$6,000</p>
+                        </button>
+                        <button class="bts-2t">
+                            <p>2TB SSD 儲存裝置</p>
+                            <p class="p-2t">+NT$18,000</p>
+                        </button>
+                    </div>   
+                </div>
+                <div class="content-power">
+                    <h4>電源轉接器</h4>
+                    <div class="a">
+                        <a href="#">
+                            哪一款電源轉接器適合你？
+                        </a>
+                    </div>
+                    <div class="bts">
+                        <button class="bts-35w">
+                            <p>35W 雙 USB-C 埠小型電源轉接器</p>
+                            <p class="p-35w">隨附</p>
+                        </button>
+                        <button class="bts-67w">
+                            <p>67W USB-C 電源轉接器</p>
+                            <p class="p-67w"></p>
+                        </button>
+                    </div>   
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="money-xl">
+        <div class="money-xl-wrap">
+            <div class="transport">
+                <i class="fa-solid fa-cube"></i>
+                <h5>運送:</h5>
+                <p>暫未發售</p>
+            </div>
+            <div class="take">
+                <i class="fa-brands fa-cc-apple-pay"></i>
+                <h5>取貨:</h5>
+                <p>目前無法採用「Apple 直營店取貨」服務</p>
+            </div>
+            <div class="cash">
+                <div class="money">NT$46,900</div>
+                <div class="tax">含營業稅和其他法定稅費：約 NT$2,272。*</div>
+                <a href="#">
+                    <i class="fa-solid fa-info"></i>
+                    <p>0 利率分期付款，每月 NT$3,908 起，共 12 個月</p>
+                </a>                
+            </div>
+            <button class="add">加入購物袋</button>
+            <div class="save">
+                <i class="fa-solid fa-bookmark"></i> 
+            </div>
+            <div class="save-hover">加入儲存的商品<div></div></div>
+        </div>
+    </div>
+    <script>       
+        let p8g=document.querySelector('.p-8g')
+        let p16g=document.querySelector('.p-16g')
+        let p24g=document.querySelector('.p-24g')
+        let bts8g=document.querySelector('.bts-8g')
+        let bts16g=document.querySelector('.bts-16g')
+        let bts24g=document.querySelector('.bts-24g')
 
 
+        let gbbts=document.querySelectorAll('.content-gb>.bts>button')
+        let ssdbts=document.querySelectorAll('.content-ssd>.bts>button')
+        let powerbts=document.querySelectorAll('.content-power>.bts>button')
 
+        p8g.innerHTML=''
+        
+
+        bts8g.addEventListener('click',()=>{
+            color(gbbts)
+            
+            bts8g.style.outline='3px solid #0080FF'
+            p8g.innerHTML=''
+            p16g.innerHTML=coin6000
+            p24g.innerHTML=coin12000
+            check()
+        })
+        bts16g.addEventListener('click',()=>{
+            color(gbbts)
+            
+            bts16g.style.outline='3px solid #0080FF'
+            p8g.innerHTML=coin_6000
+            p16g.innerHTML=''
+            p24g.innerHTML=coin6000 
+            check()                    
+        })
+        bts24g.addEventListener('click',()=>{
+            color(gbbts)
+            
+            bts24g.style.outline='3px solid #0080FF'
+            p8g.innerHTML=coin_12000
+            p16g.innerHTML=coin_6000
+            p24g.innerHTML=''
+            check()
+        })
+        
+        let coin6000='+NT$6,000'
+        let coin_6000='-NT$6,000'
+        let coin12000='+NT$12,000'
+        let coin_12000='-NT$12,000'
+        let coin18000='+NT$18,000'
+        let coin_18000='-NT$18,000'
+
+
+        function color(bts){
+            bts.forEach(x=>{                
+                x.style.outline='none'  
+                x.addEventListener('mouseover',()=>{
+                    x.style.borderColor='#555' 
+                })               
+                x.addEventListener('mouseout',()=>{
+                    x.style.borderColor='#ccc'
+                })                                                   
+        })
+        }
+
+        let p512g=document.querySelector('.p-512g')
+        let p1t=document.querySelector('.p-1t')
+        let p2t=document.querySelector('.p-2t')
+        let bts512g=document.querySelector('.bts-512g')
+        let bts1t=document.querySelector('.bts-1t')
+        let bts2t=document.querySelector('.bts-2t')
+
+        p512g.innerHTML=''
+
+        bts512g.addEventListener('click',()=>{
+            color(ssdbts)
+            bts512g.style.outline='3px solid #0080FF'
+            p512g.innerHTML=''
+            p1t.innerHTML=coin6000
+            p2t.innerHTML=coin18000  
+            check()          
+        })
+        bts1t.addEventListener('click',()=>{
+            color(ssdbts)
+            bts1t.style.outline='3px solid #0080FF'
+            p512g.innerHTML=coin_6000
+            p1t.innerHTML=''
+            p2t.innerHTML=coin12000 
+            check()                    
+        })
+        bts2t.addEventListener('click',()=>{
+            color(ssdbts)
+            bts2t.style.outline='3px solid #0080FF'
+            p512g.innerHTML=coin_18000
+            p1t.innerHTML=coin_12000
+            p2t.innerHTML=''
+            check()
+        })
+
+        let p35w=document.querySelector('.p-35w')
+        let p67w=document.querySelector('.p-67w')
+        let bts35w=document.querySelector('.bts-35w')
+        let bts67w=document.querySelector('.bts-67w')
+
+        bts35w.addEventListener('click',()=>{
+            color(powerbts)
+            bts35w.style.outline='3px solid #0080FF'
+            p35w.innerHTML='隨附'
+            p67w.innerHTML=''
+        })
+        bts67w.addEventListener('click',()=>{
+            color(powerbts)
+            bts67w.style.outline='3px solid #0080FF'
+            p35w.innerHTML=''
+            p67w.innerHTML='隨附'
+        })
+
+        let money=document.querySelector('.money')
+        
+        let coin=46900
+        let coingb,coinssd
+        
+        function check(){            
+            if(p8g.innerHTML==''){
+                coingb=0
+            }else if(p16g.innerHTML==''){
+                coingb=6000
+            }else if(p24g.innerHTML==''){
+                coingb=12000
+            }
+            if(p512g.innerHTML==''){
+                coinssd=0
+            }else if(p1t.innerHTML==''){
+                coinssd=6000
+            }else if(p2t.innerHTML==''){
+                coinssd=18000
+            }
+            money.innerHTML=`NT$${dollors(coin+coingb+coinssd)}`
+        }
+
+        function dollors(number){
+            return new Intl.NumberFormat('en-IN').format(number);
+        };
+        
+    </script>
 
 
 </body>
