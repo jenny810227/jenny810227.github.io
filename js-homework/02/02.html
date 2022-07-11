@@ -196,7 +196,7 @@
         //let answer2
         function check(){
             if(input.disabled==false){
-                let answer=input.value.split('')
+                let answer=parseInt(input.value).toString().split('')
                 let answer2=answer.filter((x, index, arr) => arr.indexOf(x) == index)                
                 if(answer.length!=4||answer2.length!=4){
                     alert(`輸入錯誤`)
