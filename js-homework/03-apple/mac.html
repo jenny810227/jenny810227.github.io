@@ -203,8 +203,8 @@
         }
         .content .bts button{
             text-align: left;
-            margin: 2% ;
-            width: 120%;
+            margin:  2% 0 ;
+            width: 100%;
             background-color: #fff;
             border: 1px solid #ccc;
             border-radius: 10px;
@@ -251,7 +251,7 @@
             font-size: 16px;
         }
         .content-ssd .bts p:nth-child(2){
-            font-size: 18px;
+            font-size: 16px;
             color: #888;
         }
         
@@ -280,7 +280,70 @@
         .money-xl{
             display: none;
         }
+        .money-xs{
+            top: 0;
+            z-index: 5;
+            background-color: #eee;
+            width: 100%;
+            height: 125px;
+            border-bottom: 1px solid #aaa;
+            box-sizing: border-box;
+            padding: 30px;
+        }
+        .money-xs .xs-money{
+           font-size: 20px;
+           font-weight: 600;
+        }
+        
+        .money-xs-wrap .xs-cash a{
+                text-decoration: none;
+                font-size: 16px;
+                color: #0080FF;
+                display: flex;  
+                position: relative;   
+                margin-top: 5px;           
+            }
+        .money-xs-wrap .xs-cash i{                
+            color: #0080FF;
+            font-size: 12px;
+            border: 2px solid #0080FF;
+            border-radius: 50%;
+            padding: 2px 6px;
+            box-sizing: border-box; 
+            position: absolute;  
+            top: 0;          
+        }    
+        .money-xs-wrap .xs-cash p{
+            text-indent: 30px;
+            line-height: 1.5;
 
+        }
+        .money-xs-wrap .add{
+            font-size: 16px;
+            box-sizing: border-box;
+            padding: 6px 15px;
+            background-color: #0080FF70;
+            border-radius: 10px;
+            color: #fff;
+            border: none;
+            position: absolute;
+            right: 70px;
+            top: 30px;
+        }    
+        .money-xs-wrap .xs-save i{
+            font-size: 24px;
+            color: #0080FF;
+            position: absolute;
+            right: 30px;
+            top: 40px;
+        }  
+        .money-block{
+            display: block;
+            position: fixed;
+        }
+        .money-none{
+            display: none;
+        }
 
 
         
@@ -368,6 +431,9 @@
             }
             .content-choose button:hover{
                 border-color: #555 ;
+            }
+            .money-xs{
+                display: none;
             }
             .money-xl{
                 display: block;
@@ -768,6 +834,21 @@
             <div class="save-hover">加入儲存的商品<div></div></div>
         </div>
     </div>
+    <div class="money-xs money-none">
+        <div class="money-xs-wrap">            
+            <div class="xs-cash">
+                <div class="xs-money">NT$46,900</div>                
+                <a href="#">
+                    <i class="fa-solid fa-info"></i>
+                    <p>0 利率分期付款，每月<br> NT$3,908 起，共 12 個月</p>
+                </a>                
+            </div>
+            <button class="add">加入購物袋</button>
+            <div class="xs-save">
+                <i class="fa-solid fa-bookmark"></i> 
+            </div>            
+        </div>
+    </div>
     <script>       
         let p8g=document.querySelector('.p-8g')
         let p16g=document.querySelector('.p-16g')
@@ -885,7 +966,7 @@
         })
 
         let money=document.querySelector('.money')
-        
+        let moneyxs=document.querySelector('.xs-money')
         let coin=46900
         let coingb,coinssd
         
@@ -904,12 +985,34 @@
             }else if(p2t.innerHTML==''){
                 coinssd=18000
             }
-            money.innerHTML=`NT$${dollors(coin+coingb+coinssd)}`
+            money.innerHTML=`NT$${dollors(coin+coingb+coinssd)}`            
+            moneyxs.innerHTML=`NT$${dollors(coin+coingb+coinssd)}`
         }
 
         function dollors(number){
             return new Intl.NumberFormat('en-IN').format(number);
         };
+
+
+        let money_xs=document.querySelector('.money-xs') 
+        function scroll(){
+            if(windowscroll>150){
+                money_xs.classList.remove('money-none')
+                money_xs.classList.add('money-block')
+            }
+            else{
+                money_xs.classList.add('money-none')
+            }
+        }      
+
+        let windowscroll=0
+
+        document.addEventListener('scroll', function() {
+            windowscroll=window.scrollY
+            scroll()
+        })
+        
+        // setInterval(scroll, 50); 
         
     </script>
 
