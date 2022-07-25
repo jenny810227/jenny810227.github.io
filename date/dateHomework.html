@@ -254,7 +254,7 @@
                         <p>日期：</p><input type="text" id="add-date">
                     </label>
                     <label>
-                        <p>請選擇時間：</p><input type="time" class="color-time" id="add-time">
+                        <p>時間：</p><input type="time" class="color-time" id="add-time">
                     </label>
                     <label><i class="fa-solid fa-location-dot"></i><input type="text" placeholder="新增地點"
                             id="add-place"></label>
@@ -357,7 +357,7 @@
 
             let firstDay = new Date(year, month - 1).getDay()
 
-            let dayOfMonth = new Date(year, month + 1, 0).getDate()
+            let dayOfMonth = new Date(year, month, 0).getDate()
             let day = 1
 
             let rows = Math.ceil((dayOfMonth + firstDay) / 7)
