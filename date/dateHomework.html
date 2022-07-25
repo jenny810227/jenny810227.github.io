@@ -170,8 +170,11 @@
             color: #fff;
             margin: auto 0;
             padding-right: 10px;
+            font-size: 20px;
         }
-
+        label:nth-child(4) i {
+            padding-right: 17px;
+        }
         input {
             border: none;
             flex-grow: 1;
@@ -254,7 +257,7 @@
                 </div>
                 <div class="modal-body">
                     <label>
-                        <p>請新增標題：</p><input type="text" placeholder="新增標題" id="add-title">
+                        <p>新增標題：</p><input type="text" placeholder="新增標題" id="add-title">
                     </label>
                     <label>
                         <p>日期：</p><input type="text" id="add-date" disabled>
@@ -264,7 +267,7 @@
                     </label>
                     <label><i class="fa-solid fa-location-dot"></i><input type="text" placeholder="新增地點"
                             id="add-place"></label>
-                    <label><i class="fa-solid fa-book"></i><input type="text" placeholder="新增說明" id="add-text"></label>
+                    <label><i class="fa-solid fa-file-signature"></i><input type="text" placeholder="新增說明" id="add-text"></label>
                     <label>
                         <p>請選擇顏色：</p><input type="color" class="input-color" id="add-color">
                     </label>
@@ -294,7 +297,7 @@
                         <p>時間：</p><input type="time" class="color-time" id="edit-time">
                     </label>
                     <label><i class="fa-solid fa-location-dot"></i><input type="text" id="edit-place"></label>
-                    <label><i class="fa-solid fa-book"></i><input type="text" id="edit-text"></label>
+                    <label><i class="fa-solid fa-file-signature"></i><input type="text" id="edit-text"></label>
                     <label>
                         <p>顏色：</p><input type="color" class="input-color" id="edit-color">
                     </label>
