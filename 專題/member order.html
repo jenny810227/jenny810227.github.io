@@ -20,7 +20,6 @@
         .person-sidebar{
                 display: none;
         }
-        /* 漢堡 */
         .offcanvas-end{
                 max-width: 300px;
         }
@@ -97,24 +96,24 @@
             box-sizing: border-box;
             background-color: var(--clr-bg-y);
         }
-        .container-input{
+        .container-order{
             background-color: #fff;
             padding: 0;
             border-radius: 6px;
         }
-        .container-input-header{
+        .container-order-header{
             border-bottom: 1px solid var(--clr-bg-g);
             padding: 20px 20px 0;
         }
-        .container-input-header h2{
+        .container-order-header h2{
             font-size:var(--vicefont);
             font-weight: 600;
             margin-bottom: 20px;
         }
-        .container-input-header ul{
+        .container-order-header ul{
             display: flex;
         }
-        .container-input-header li{
+        .container-order-header li{
             padding: 10px 20px;
             box-sizing: border-box;
             font-size: var(--font);
@@ -128,49 +127,151 @@
             
         }
 
-        /* 表單資料 */
-        .container-input-body{
-            padding: 20px 20px 0;
-        }
-        .inputs label{
-            margin-bottom: 10px;
+        /* 訂單資料 */
+        .container{
             font-size: var(--font);
         }
-        .input{
-            display: block;
-            width: 100%;
-            box-sizing: border-box;
-            padding: 10px 12px;
-            border: 1px solid var(--clr-bg-g);
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .input:focus{
-            border: 1px solid var(--clr-border);
-            outline: none;
-        }
-        .input::placeholder{
-            color: var(--clr-bg-g);
-            font-size: var(--font);
-        }
-        .container-input-save{
-            padding-right: 20px;
-            padding-bottom: 20px;
-            text-align: end;  
-            font-size: var(--font);          
-        }
-        .container-input-save button{
-            box-sizing: border-box;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            background-color: var(--clr-border);
-            color: var(--clr-bg-y);
-        }
+        
+        
 
         @media screen and (min-width:768px) {
             
             
+            
+        }
+        @media screen and (min-width:992px) {
+            .container-order{
+                margin-left: 0;
+                margin-right: 0;
+                margin: auto;
+                width: 680px;                
+            }
+            .container-order-body:last-child{
+                padding-bottom: 20px;
+            }
+            .order{
+                margin: 20px;
+                border: 1px solid var(--clr-bg-g);
+                border-radius: 6px;
+            }
+            .order-a{
+                display: block;
+                box-sizing: border-box;
+                padding: 15px;
+            }
+            .order:hover{
+                box-shadow: 0 0 10px var(--clr-bg-g);
+            }
+            .order-program{
+                position: relative;
+            }
+            .order-img{
+                width: 200px;
+                height: 195px;
+                border-radius: 6px;
+                overflow: hidden;
+            }
+            .order-img img{
+                width: 150%;
+            }
+
+            .order-state{
+                display: inline-block;
+                background-color: var(--clr-border);
+                color: var(--clr-bg-y);
+                box-sizing: border-box;
+                padding: 6px 8px;
+                border-radius: 6px;
+                font-weight: 700;
+                margin-bottom: 10px;
+            }
+            .order-h3{
+                font-weight: 700;
+                font-size: 18px;
+                margin-bottom: 15px;
+            }
+            .order-content div{
+                display: flex;
+                align-items: center;
+                color: var(--clr-font);
+                margin-bottom: 5px;
+            }
+            .order-content i{
+                margin-right: 10px;
+            }
+            .order-money{       
+               position: absolute;
+               right: 0;   
+               bottom: 0; 
+            }
+            .money-currency{
+                color: var(--clr-font);
+                margin-right: 5px;
+            }
+            .money-dollor{
+                color: var(--clr-border);
+                font-size: 20px;
+            }
+            .order-date{
+                position: absolute;
+                right: 15px;
+                top: 0;  
+                background-color: var(--clr-primary);         
+                width: 60px;
+                text-align: center; 
+                border-radius: 6px;
+                color: var(--clr-border);
+                box-sizing: border-box;
+                padding: 5px 0;
+                border-bottom: 2px solid var(--clr-border);
+            }
+            .order-date-day{
+                font-size: 20px;
+                font-weight: 700;
+            }
+            .order-md-a{
+                display: none;                
+            }
+            .order-xl-a{
+                display: flex;
+                padding-bottom: 30px;
+                justify-content: space-between;
+            }
+            .order-evaluation a{
+                display: flex;
+                margin-left: 15px;
+                align-items: center;
+                color: var(--clr-border);
+            }
+            .order-evaluation a:hover{
+                color: var(--clr-specfont);
+            }
+            .order-evaluation i{
+                margin-right: 10px;
+            }
+            .order-link{
+                margin-right: 15px;
+            }
+            .order-connect{
+                background-color: var(--clr-border);
+                box-sizing: border-box;
+                color: var(--clr-bg-y);
+                padding: 8px 16px;
+                border-radius: 6px;
+            }
+            .order-receipt{
+                box-sizing: border-box;
+                padding: 8px 16px;
+                border-radius: 6px;
+                border: 1px solid var(--clr-border);
+            }
+            .order-receipt:hover{
+                background-color: var(--clr-bg-g);
+            }
+            .order-connect:hover{
+                color: var(--clr-bg-y);
+                background-color: var(--clr-specfont);
+            }
             
         }
 
@@ -259,84 +360,25 @@
             .this-a a{
                 color: var(--clr-border);
             }
-            .container-input-header li:hover{
+            .container-order-header li:hover{
                 border-bottom: 3px solid var(--clr-primary);
             }
-            .container-input-header .this-page:hover{
+            .container-order-header .this-page:hover{
                 border-bottom: 3px solid var(--clr-border);
             }
-            .container-input-save button:hover{
+            .container-order-save button:hover{
                 background-color: var(--clr-specfont);
+            }
+
+            .container-order{
+                width: 100%;
             }
         }
 
     </style>
 </head>
 <body>
-    
-    <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">三</button>
-
-    <div class="member-center offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
-      <div class="member-center-header">
-       <a href="#" class="rows">
-        <div class="person-img ">
-            <img src=https://image.kkday.com/v2/image/get/s1.kkday.com/member/default_image/png>
-        </div>
-        <div class="person-title">
-            <p>Guest</p>
-            <p>12345678@gmail.com</p>
-        </div>
-        <i class="fa-solid fa-gear person-i"></i>
-       </a>
-      </div>
-      <div class="member-center-change">
-        <a href="#">保母中心</a>
-      </div>
-      <div class="member-center-body">
-        <ul>
-            <li>
-                <a href="#">
-                    <i class="fa-solid fa-comment-dots"></i>
-                    <p>聊天室</p>
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <i class="fa-solid fa-calendar-minus"></i>
-                    <p>行事曆</p>
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <i class="fa-solid fa-heart"></i>
-                    <p>我的收藏</p>
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <i class="fa-solid fa-arrow-down-short-wide"></i>
-                    <p>訂單列表</p>
-                </a>
-            </li>            
-            <li>
-                <a href="#">
-                    <i class="fa-solid fa-ticket"></i>
-                    <p>優惠卷</p>
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <i class="fa-solid fa-message"></i>
-                    <p>歷史評論</p>
-                </a>
-            </li>
-        </ul>
-      </div>
-      <div class="member-center-footer">
-        <a href="#">登出</a>
-      </div>
-    </div>
-    
+        
     <article>
         <section class="container">
             <section class="person-sidebar col-xl-3">
@@ -355,7 +397,7 @@
                 </div>  
                 <div class="member-center-body">
                     <ul>
-                        <li class="this-a">
+                        <li >
                             <a href="#" >
                                 <i class="fa-solid fa-gear person-i"></i>
                                 <p>帳號設定</p>
@@ -379,7 +421,7 @@
                                  <p>我的收藏</p>
                              </a>
                          </li>
-                         <li>
+                         <li class="this-a">
                              <a href="#">
                                  <i class="fa-solid fa-arrow-down-short-wide"></i>
                                  <p>訂單列表</p>
@@ -402,84 +444,63 @@
             </section>
 
             <section class="personal-information col-xl-9">
-        <div class="container-input">
-            <div class="container-input-header">
-                <h2>帳號設定</h2>
-                <ul>
-                    <li class="this-page">
-                        <a href="#">基本資料</a>
-                    </li>
-                    <li>
-                        <a href="#">常用旅客</a>
-                    </li>
-                    <li>
-                        <a href="#">帳號安全</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="container-input-body row">
-                <div class="inputs col-md-12 col-lg-6 col-xl-6 ">
-                    <label for="">
-                        姓名
-                        <span class="text-danger">*</span>
-                    </label>
-                    <input type="text" placeholder="姓名" class="input" required>
+                <div class="container-order">
+                    <div class="container-order-header">
+                        <h2 >訂單管理</h2>
+                    </div>
+                    <div class="container-order-body">                        
+                        <div class="order">
+                            <a href="" class="order-a">
+                                <div class="order-program row">
+                                    <div class="order-img col-lg-4 col-xl-3">
+                                        <img  src="https://image.kkday.com/v2/image/get/w_561%2Ch_272%2Cc_fit%2Cq_55%2Ct_webp/s1.kkday.com/product_24308/20211118063518_y69wN/jpg" alt="">
+                                    </div>  
+                                    <div class="col-lg-6 col-xl-7">
+                                        <div class="order-state">已出發</div>
+                                        <h3 class="order-h3">【安心遊傳藝】台灣宜蘭｜國立傳統藝術中心｜門票、遊程體驗</h3>
+                                        <div class="order-content">
+                                            <div>
+                                                <i class="fa-solid fa-bag-shopping"></i>
+                                                <p >方案：國立傳統藝術中心｜門票</p>
+                                            </div>
+                                            <div>
+                                                <i class="fa-solid fa-tag"></i>
+                                                <p>訂單編號：#21KK219636366</p>
+                                            </div>
+                                        </div>    
+                                    </div>   
+                                    <div class="order-money col-lg-2 col-xl-2">
+                                        <span class="money-currency">TWD</span><span class="money-dollor">270</span>
+                                    </div>                                 
+                                    <div class="order-date col-lg-2 col-xl-2">                                        
+                                            <span class="order-date-mon">DEC</span><br/>
+                                            <span class="order-date-day">25</span>                                        
+                                    </div>
+                                </div>
+                                
+                                <div class="order-md-a">
+                                    <a href="#">聯絡客服</a>
+                                    <a href="#">檢視憑證</a>
+                                    <a href="#">撰寫評論</a>
+                                </div>
+                                <div class="order-xl-a">
+                                    <div class="order-evaluation">
+                                        <a href="#" >
+                                            <i class="fa-solid fa-comment-dots"></i>
+                                            <p>給予評論</p>
+                                        </a>
+                                    </div>
+                                    <div class="order-link">
+                                        <a href="#" class="order-receipt">寄送報帳收據</a>
+                                        <a href="#" class="order-connect">聯繫客服</a>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        
+                    </div>   
                 </div>
-                <div class="inputs col-md-12 col-lg-6 col-xl-6 ">
-                    <label for="">
-                        暱稱                        
-                    </label>
-                    <input type="text" placeholder="暱稱" class="input" required>
-                </div>
-                <div class="inputs col-md-12 col-lg-6 col-xl-6 ">
-                    <label for="">
-                        性別                        
-                    </label>
-                    <select class="input" >
-                      <option selected>-請選擇-</option>
-                      <option value="1">男性</option>
-                      <option value="2">女性</option>
-                    </select>
-                </div>
-                <div class="inputs col-md-12 col-lg-6 col-xl-6 ">
-                    <label for="">
-                        出生日期                        
-                    </label>
-                    <input type="date" class="input">
-                </div>
-                <div class="inputs col-md-12 col-xl-12">
-                    <label for="">
-                        住址   
-                        <span class="text-danger">*</span>                   
-                    </label>
-                    <input type="text" placeholder="住址" class="input" required>
-                </div>
-                <div class="inputs col-md-12 col-xl-12">
-                    <label for="">
-                        第二住址                    
-                    </label>
-                    <input type="text" placeholder="第二住址" class="input">
-                </div>
-                <div class="inputs col-md-12 col-xl-4">
-                    <label for="">
-                        電話號碼
-                        <span class="text-danger">*</span>                   
-                    </label>
-                    <input type="phone" placeholder="電話號碼" class="input" required>
-                </div>
-                <div class="inputs col-md-12 col-xl-8">
-                    <label for="">
-                        聯絡E-mail  
-                        <span class="text-danger">*</span>                   
-                    </label>
-                    <input type="email" placeholder="聯絡E-mail" class="input" required>
-                </div>                
-            </div>
-            <div class="container-input-save">
-                <button class="">儲存</button>
-            </div>
-            
-        </div>
+                
             </section>
         </section>
     </article>
