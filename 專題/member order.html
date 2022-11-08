@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/7331b936ff.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="Css.css">
+    <style>
+        
+        a{
+            text-decoration: none;
+            color: var(--clr-font);
+        }
+        a:hover{
+            color: var(--clr-font);
+        }
+        .person-sidebar{
+                display: none;
+        }
+        .offcanvas-end{
+                max-width: 300px;
+        }
+        .member-center-header{
+            background-color: var(--clr-border);
+        }
+        .member-center-header a:hover{
+            background-color: var(--clr-specfont);
+        }
+        .member-center-header a{
+            display: flex;
+            padding: 20px;
+            box-sizing: border-box;
+            align-items: center;
+        }
+        .person-img{
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 10px;
+        }
+        .person-img img{
+            width: 100%;
+            height: 100%;
+        }
+        .person-title{
+            flex-grow: 1;
+        }
+        .person-title p{
+            font-size: var(--font);
+            color: var(--clr-bg-y);
+        }
+        .member-center-change{
+            border-bottom: 1px solid var(--clr-bg-g);
+        }
+        .member-center-change a{
+            display: block;
+            padding: 12px 20px;
+            color: var(--clr-specfont);
+            font-weight: 700;
+        }
+        .member-center-change a:hover{
+            background-color: var(--clr-primary);
+        }
+        .member-center-body a:hover,.member-center-footer a:hover{
+            background-color: var(--clr-bg-g);
+        }
+        .member-center-body a{
+            display: flex;
+            font-size: var(--font);
+            padding: 12px 20px;
+            align-items: center;
+            color: var(--clr-font);
+        }
+        .member-center-body i{
+            margin-right: 10px;
+        }
+        .member-center-body p{
+            flex-grow: 1;
+        }
+        .member-center-footer{
+            border-top: 1px solid var(--clr-bg-g);
+            border-bottom: 1px solid var(--clr-bg-g);
+        }
+        .member-center-footer a{
+            display: block;
+            padding: 12px 20px;
+        }
+
+        /* 帳號設定 */
+        .personal-information{
+            padding: 15px;
+            box-sizing: border-box;
+            background-color: var(--clr-bg-y);
+        }
+        .container-order{
+            background-color: #fff;
+            padding: 0;
+            border-radius: 6px;
+        }
+        .container-order-header{
+            border-bottom: 1px solid var(--clr-bg-g);
+            padding: 20px 20px 0;
+        }
+        .container-order-header h2{
+            font-size:var(--vicefont);
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .container-order-header ul{
+            display: flex;
+        }
+        .container-order-header li{
+            padding: 10px 20px;
+            box-sizing: border-box;
+            font-size: var(--font);
+            font-weight: 700;
+        }
+        .this-page{
+            border-bottom: 3px solid var(--clr-border);
+        }
+        .this-page a{
+            color: var(--clr-border);
+            
+        }
+
+        /* 訂單資料 */
+        .container{
+            font-size: var(--font);
+        }
+        
+        
+
+        @media screen and (min-width:768px) {
+            
+            
+            
+        }
+        @media screen and (min-width:992px) {
+            .container-order{
+                margin-left: 0;
+                margin-right: 0;
+                margin: auto;
+                width: 680px;                
+            }
+            .container-order-body:last-child{
+                padding-bottom: 20px;
+            }
+            .order{
+                margin: 20px;
+                border: 1px solid var(--clr-bg-g);
+                border-radius: 6px;
+            }
+            .order-a{
+                display: block;
+                box-sizing: border-box;
+                padding: 15px;
+            }
+            .order:hover{
+                box-shadow: 0 0 10px var(--clr-bg-g);
+            }
+            .order-program{
+                position: relative;
+            }
+            .order-img{
+                width: 200px;
+                height: 195px;
+                border-radius: 6px;
+                overflow: hidden;
+            }
+            .order-img img{
+                width: 150%;
+            }
+
+            .order-state{
+                display: inline-block;
+                background-color: var(--clr-border);
+                color: var(--clr-bg-y);
+                box-sizing: border-box;
+                padding: 6px 8px;
+                border-radius: 6px;
+                font-weight: 700;
+                margin-bottom: 10px;
+            }
+            .order-h3{
+                font-weight: 700;
+                font-size: 18px;
+                margin-bottom: 15px;
+            }
+            .order-content div{
+                display: flex;
+                align-items: center;
+                color: var(--clr-font);
+                margin-bottom: 5px;
+            }
+            .order-content i{
+                margin-right: 10px;
+            }
+            .order-money{       
+               position: absolute;
+               right: 0;   
+               bottom: 0; 
+            }
+            .money-currency{
+                color: var(--clr-font);
+                margin-right: 5px;
+            }
+            .money-dollor{
+                color: var(--clr-border);
+                font-size: 20px;
+            }
+            .order-date{
+                position: absolute;
+                right: 15px;
+                top: 0;  
+                background-color: var(--clr-primary);         
+                width: 60px;
+                text-align: center; 
+                border-radius: 6px;
+                color: var(--clr-border);
+                box-sizing: border-box;
+                padding: 5px 0;
+                border-bottom: 2px solid var(--clr-border);
+            }
+            .order-date-day{
+                font-size: 20px;
+                font-weight: 700;
+            }
+            .order-md-a{
+                display: none;                
+            }
+            .order-xl-a{
+                display: flex;
+                padding-bottom: 30px;
+                justify-content: space-between;
+            }
+            .order-evaluation a{
+                display: flex;
+                margin-left: 15px;
+                align-items: center;
+                color: var(--clr-border);
+            }
+            .order-evaluation a:hover{
+                color: var(--clr-specfont);
+            }
+            .order-evaluation i{
+                margin-right: 10px;
+            }
+            .order-link{
+                margin-right: 15px;
+            }
+            .order-connect{
+                background-color: var(--clr-border);
+                box-sizing: border-box;
+                color: var(--clr-bg-y);
+                padding: 8px 16px;
+                border-radius: 6px;
+            }
+            .order-receipt{
+                box-sizing: border-box;
+                padding: 8px 16px;
+                border-radius: 6px;
+                border: 1px solid var(--clr-border);
+            }
+            .order-receipt:hover{
+                background-color: var(--clr-bg-g);
+            }
+            .order-connect:hover{
+                color: var(--clr-bg-y);
+                background-color: var(--clr-specfont);
+            }
+            
+        }
+
+        @media screen and (min-width:1200px) {
+            .btn-primary{
+                display: none;
+            }
+            .member-center{
+                display: none;
+            }
+            article{
+                background-color: var(--clr-bg-y);
+            }
+            .person-sidebar{
+                display: block;
+                box-sizing: border-box;
+                padding: 15px;
+            }
+            .container{
+                display: flex;
+                flex-wrap: wrap;
+            }
+            .member-center-header{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                background-color: #fff;
+                border-radius: 6px 6px 0 0;
+            }
+            .person-img{
+                width: 120px;
+                height: 120px;
+                border: 1px solid var(--clr-bg-g);
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+            .person-img-camera{
+                position: relative;
+                margin-top: -70px;
+                margin-right: -80px;
+                color: var(--clr-font);
+                font-size: 20px;
+            }
+            .member-center-header a:hover{
+                background-color: transparent;
+            }
+            .member-center-header p{
+                color: var(--clr-font);
+                margin-bottom: 10px;                  
+            }          
+            .person-name{
+                font-weight: 700;
+            }            
+            .person-change{
+                background-color: #fff;                
+                border-top: 1px solid var(--clr-bg-g);   
+                border-radius: 0 0 6px 6px;
+            }
+            .person-change a{
+                text-align: center;
+                display: block;  
+                color: var(--clr-specfont);
+                padding: 10px;
+                font-weight: 700;
+            }
+            .person-change a:hover{
+                background-color: var(--clr-primary);
+            }
+            .member-center-body{
+                margin-top: 20px;
+                background-color: #fff;
+                border-radius: 6px;
+            }
+            .this-a::before{
+                content: "";
+                position: absolute;
+                top: 25%;
+                left: 0;
+                height: 24px;
+                width: 4px;
+                background-color: var(--clr-border);
+            }
+            .this-a{
+                position: relative;
+            }
+            .this-a a{
+                color: var(--clr-border);
+            }
+            .container-order-header li:hover{
+                border-bottom: 3px solid var(--clr-primary);
+            }
+            .container-order-header .this-page:hover{
+                border-bottom: 3px solid var(--clr-border);
+            }
+            .container-order-save button:hover{
+                background-color: var(--clr-specfont);
+            }
+
+            .container-order{
+                width: 100%;
+            }
+        }
+
+    </style>
+</head>
+<body>
+        
+    <article>
+        <section class="container">
+            <section class="person-sidebar col-xl-3">
+                <div class="member-center-header"> 
+                    <div class="person-img">
+                    <img src="https://image.kkday.com/v2/image/get/s1.kkday.com/member/default_image/png">                     
+                    </div>     
+                    <a href="#"  class="person-img-camera" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Allowed max size of image: 1M">
+                    <i class="fa-solid fa-camera"></i>
+                    </a>               
+                    <p class="person-name">Guest</p>   
+                    <p>12345678@gmail.com</p>                      
+                </div>  
+                <div class="person-change">
+                    <a href="#">保母中心</a>
+                </div>  
+                <div class="member-center-body">
+                    <ul>
+                        <li >
+                            <a href="#" >
+                                <i class="fa-solid fa-gear person-i"></i>
+                                <p>帳號設定</p>
+                            </a>
+                        </li>
+                         <li>
+                             <a href="#">
+                                 <i class="fa-solid fa-comment-dots"></i>
+                                 <p>聊天室</p>
+                             </a>
+                         </li>
+                         <li>
+                             <a href="#">
+                                 <i class="fa-solid fa-calendar-minus"></i>
+                                 <p>行事曆</p>
+                             </a>
+                         </li>
+                         <li>
+                             <a href="#">
+                                 <i class="fa-solid fa-heart"></i>
+                                 <p>我的收藏</p>
+                             </a>
+                         </li>
+                         <li class="this-a">
+                             <a href="#">
+                                 <i class="fa-solid fa-arrow-down-short-wide"></i>
+                                 <p>訂單列表</p>
+                             </a>
+                         </li>            
+                         <li>
+                             <a href="#">
+                                 <i class="fa-solid fa-ticket"></i>
+                                 <p>優惠卷</p>
+                             </a>
+                         </li>
+                         <li>
+                             <a href="#">
+                                 <i class="fa-solid fa-message"></i>
+                                 <p>歷史評論</p>
+                             </a>
+                         </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="personal-information col-xl-9">
+                <div class="container-order">
+                    <div class="container-order-header">
+                        <h2 >訂單管理</h2>
+                    </div>
+                    <div class="container-order-body">                        
+                        <div class="order">
+                            <a href="" class="order-a">
+                                <div class="order-program row">
+                                    <div class="order-img col-lg-4 col-xl-3">
+                                        <img  src="https://image.kkday.com/v2/image/get/w_561%2Ch_272%2Cc_fit%2Cq_55%2Ct_webp/s1.kkday.com/product_24308/20211118063518_y69wN/jpg" alt="">
+                                    </div>  
+                                    <div class="col-lg-6 col-xl-7">
+                                        <div class="order-state">已出發</div>
+                                        <h3 class="order-h3">【安心遊傳藝】台灣宜蘭｜國立傳統藝術中心｜門票、遊程體驗</h3>
+                                        <div class="order-content">
+                                            <div>
+                                                <i class="fa-solid fa-bag-shopping"></i>
+                                                <p >方案：國立傳統藝術中心｜門票</p>
+                                            </div>
+                                            <div>
+                                                <i class="fa-solid fa-tag"></i>
+                                                <p>訂單編號：#21KK219636366</p>
+                                            </div>
+                                        </div>    
+                                    </div>   
+                                    <div class="order-money col-lg-2 col-xl-2">
+                                        <span class="money-currency">TWD</span><span class="money-dollor">270</span>
+                                    </div>                                 
+                                    <div class="order-date col-lg-2 col-xl-2">                                        
+                                            <span class="order-date-mon">DEC</span><br/>
+                                            <span class="order-date-day">25</span>                                        
+                                    </div>
+                                </div>
+                                
+                                <div class="order-md-a">
+                                    <a href="#">聯絡客服</a>
+                                    <a href="#">檢視憑證</a>
+                                    <a href="#">撰寫評論</a>
+                                </div>
+                                <div class="order-xl-a">
+                                    <div class="order-evaluation">
+                                        <a href="#" >
+                                            <i class="fa-solid fa-comment-dots"></i>
+                                            <p>給予評論</p>
+                                        </a>
+                                    </div>
+                                    <div class="order-link">
+                                        <a href="#" class="order-receipt">寄送報帳收據</a>
+                                        <a href="#" class="order-connect">聯繫客服</a>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        
+                    </div>   
+                </div>
+                
+            </section>
+        </section>
+    </article>
+    
+    
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+</body>
+</html>
