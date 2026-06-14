@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心智大考驗 - 終極記憶翻牌遊戲</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#0F172A',
+                        cardback: '#1E293B',
+                        neonblue: '#38BDF8',
+                        neonpurple: '#A855F7',
+                        neongreen: '#4ADE80',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', 'Rajdhani', sans-serif;
+            background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #0f172a 100%);
+            overflow-x: hidden;
+        }
+
+        /* Card 3D Flip Effects */
+        .game-container {
+            perspective: 1000px;
+        }
+
+        .card-inner {
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        .card-front {
+            transform: rotateY(180deg);
+        }
+
+        /* Glassmorphism utility */
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Card Match Animations */
+        @keyframes pulse-success {
+            0%, 100% { transform: rotateY(180deg) scale(1); filter: brightness(1); }
+            50% { transform: rotateY(180deg) scale(1.08); filter: brightness(1.3) drop-shadow(0 0 15px rgba(74, 222, 128, 0.6)); }
+        }
+
+        @keyframes shake-fail {
+            0%, 100% { transform: rotateY(180deg) translateX(0); }
+            20%, 60% { transform: rotateY(180deg) translateX(-6px); }
+            40%, 80% { transform: rotateY(180deg) translateX(6px); }
+        }
+
+        .match-success {
+            animation: pulse-success 0.5s ease-in-out;
+        }
+
+        .match-fail {
+            animation: shake-fail 0.4s ease-in-out;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(168, 85, 247, 0.4);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(168, 85, 247, 0.7);
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col justify-between selection:bg-purple-500 selection:text-white">
+
+    <!-- Confetti Canvas for Victory -->
+    <canvas id="confetti-canvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-50"></canvas>
+
+    <!-- Header Section -->
+    <header class="w-full py-4 px-6 border-b border-slate-800/80 glass-panel flex flex-col sm:flex-row justify-between items-center gap-4 z-10 shadow-lg">
+        <div class="flex items-center gap-3">
+            <div class="bg-gradient-to-tr from-sky-400 to-purple-600 p-2.5 rounded-xl shadow-lg shadow-purple-500/20">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-xl sm:text-2xl font-bold tracking-wider bg-gradient-to-r from-sky-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+                    心智翻牌考驗
+                </h1>
+                <p class="text-xs text-slate-400">Memory Card Quest</p>
+            </div>
+        </div>
+
+        <!-- Real-time Stats & Audio controls -->
+        <div class="flex items-center gap-4">
+            <button id="sound-btn" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition border border-slate-700 text-slate-300" title="切換音效">
+                <!-- Sound On Icon -->
+                <svg id="sound-on-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+                </svg>
+                <!-- Sound Off Icon (hidden initially) -->
+                <svg id="sound-off-icon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15zm11.364-4.636L14.136 13M14.136 10.364l2.828 2.828"></path>
+                </svg>
+            </button>
+            <button id="restart-btn" class="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-medium text-sm transition-all shadow-md hover:shadow-lg shadow-purple-500/20 active:scale-95 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.253 8H18"></path>
+                </svg>
+                重新開始
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow w-full max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+        
+        <!-- Sidebar Controls & Stats -->
+        <section class="lg:col-span-1 flex flex-col gap-6 w-full">
+            <!-- Game Setup -->
+            <div class="glass-panel rounded-2xl p-5 shadow-xl">
+                <h2 class="text-lg font-bold mb-4 flex items-center gap-2 text-slate-200 border-b border-slate-700/50 pb-2">
+                    <svg class="w-5 h-5 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+                    </svg>
+                    遊戲設定
+                </h2>
+                
+                <!-- Theme Selector -->
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">卡片主題</label>
+                    <div class="grid grid-cols-2 gap-2" id="theme-selector">
+                        <button data-theme="space" class="theme-btn py-2.5 px-3 rounded-xl border border-slate-700 bg-slate-800/40 hover:bg-slate-800 text-sm font-medium transition-all flex flex-col items-center justify-center gap-1 active:scale-95 text-sky-400 border-sky-500/50 bg-sky-500/10">
+                            <span class="text-xl">🚀</span>
+                            <span>宇宙科技</span>
+                        </button>
+                        <button data-theme="animals" class="theme-btn py-2.5 px-3 rounded-xl border border-slate-700 bg-slate-800/40 hover:bg-slate-800 text-sm font-medium transition-all flex flex-col items-center justify-center gap-1 active:scale-95">
+                            <span class="text-xl">🐶</span>
+                            <span>動物樂園</span>
+                        </button>
+                        <button data-theme="foods" class="theme-btn py-2.5 px-3 rounded-xl border border-slate-700 bg-slate-800/40 hover:bg-slate-800 text-sm font-medium transition-all flex flex-col items-center justify-center gap-1 active:scale-95">
+                            <span class="text-xl">🍔</span>
+                            <span>美味食物</span>
+                        </button>
+                        <button data-theme="sports" class="theme-btn py-2.5 px-3 rounded-xl border border-slate-700 bg-slate-800/40 hover:bg-slate-800 text-sm font-medium transition-all flex flex-col items-center justify-center gap-1 active:scale-95">
+                            <span class="text-xl">⚽</span>
+                            <span>運動活力</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Difficulty Selector -->
+                <div class="mb-2">
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">難度等級</label>
+                    <div class="flex flex-col gap-2" id="difficulty-selector">
+                        <button data-grid="4" class="diff-btn w-full py-2 px-4 rounded-xl border border-slate-700 bg-slate-800/40 hover:bg-slate-800 text-sm font-medium transition text-left flex justify-between items-center text-slate-300 border-purple-500/50 bg-purple-500/10">
+                            <span>簡單 (4 × 4 / 8對)</span>
+                            <span class="text-xs px-2 py-0.5 rounded bg-slate-800 text-purple-300 font-mono">EASY</span>
+                        </button>
+                        <button data-grid="6" class="diff-btn w-full py-2 px-4 rounded-xl border border-slate-700 bg-slate-800/40 hover:bg-slate-800 text-sm font-medium transition text-left flex justify-between items-center text-slate-300">
+                            <span>中等 (6 × 6 / 18對)</span>
+                            <span class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">MEDIUM</span>
+                        </button>
+                        <button data-grid="8" class="diff-btn w-full py-2 px-4 rounded-xl border border-slate-700 bg-slate-800/40 hover:bg-slate-800 text-sm font-medium transition text-left flex justify-between items-center text-slate-300">
+                            <span>困難 (8 × 8 / 32對)</span>
+                            <span class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">HARD</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Panel -->
+            <div class="glass-panel rounded-2xl p-5 shadow-xl grid grid-cols-2 gap-4">
+                <div class="col-span-2 border-b border-slate-700/50 pb-2 mb-1">
+                    <h2 class="text-lg font-bold flex items-center gap-2 text-slate-200">
+                        <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        目前數據
+                    </h2>
+                </div>
+                
+                <div class="bg-slate-800/50 border border-slate-800 rounded-xl p-3 flex flex-col justify-center items-center">
+                    <span class="text-xs text-slate-400 mb-1">翻牌步數</span>
+                    <span id="moves-counter" class="text-2xl font-bold font-mono text-sky-400">0</span>
+                </div>
+                <div class="bg-slate-800/50 border border-slate-800 rounded-xl p-3 flex flex-col justify-center items-center">
+                    <span class="text-xs text-slate-400 mb-1">消耗時間</span>
+                    <span id="time-counter" class="text-2xl font-bold font-mono text-purple-400">00:00</span>
+                </div>
+                <div class="bg-slate-800/50 border border-slate-800 rounded-xl p-3 flex flex-col justify-center items-center">
+                    <span class="text-xs text-slate-400 mb-1">準確度</span>
+                    <span id="accuracy-counter" class="text-2xl font-bold font-mono text-neongreen">100%</span>
+                </div>
+                <div class="bg-slate-800/50 border border-slate-800 rounded-xl p-3 flex flex-col justify-center items-center">
+                    <span class="text-xs text-slate-400 mb-1">已配對數</span>
+                    <span id="matched-counter" class="text-2xl font-bold font-mono text-pink-400">0 / 0</span>
+                </div>
+            </div>
+
+            <!-- Best Records / Highscores -->
+            <div class="glass-panel rounded-2xl p-5 shadow-xl">
+                <h2 class="text-lg font-bold mb-3 flex items-center gap-2 text-slate-200 border-b border-slate-700/50 pb-2">
+                    <svg class="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                    </svg>
+                    歷史最佳紀錄
+                </h2>
+                <div class="space-y-3" id="highscores-container">
+                    <!-- Dynamic generation -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Game Board Container -->
+        <section class="lg:col-span-3 flex justify-center items-center w-full min-h-[50vh] sm:min-h-[60vh] lg:min-h-[70vh]">
+            <div id="game-board" class="game-container w-full max-w-[650px] aspect-square p-2 bg-slate-900/40 rounded-3xl border border-slate-800 shadow-2xl grid gap-2 sm:gap-3 transition-all duration-300">
+                <!-- Cards will be dynamically injected here -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full py-4 text-center text-xs text-slate-500 border-t border-slate-800/50 mt-6 bg-slate-950/20">
+        <p>© 2026 心智大考驗. 本地端運行，保證您的隱私。</p>
+    </footer>
+
+    <!-- Winning Modal -->
+    <div id="win-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
+        <div class="glass-panel max-w-md w-full rounded-3xl p-6 border border-slate-700/50 shadow-2xl relative overflow-hidden transform scale-95 transition-transform duration-300">
+            <!-- Background lights -->
+            <div class="absolute -top-12 -left-12 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-12 -right-12 w-32 h-32 bg-sky-500/20 rounded-full blur-3xl"></div>
+
+            <div class="text-center relative z-10">
+                <!-- Award Graphic -->
+                <div class="w-20 h-20 mx-auto mb-4 bg-gradient-to-tr from-yellow-400 to-amber-500 rounded-2xl flex items-center justify-center shadow-lg shadow-amber-500/30 animate-bounce">
+                    <svg class="w-12 h-12 text-slate-950" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                    </svg>
+                </div>
+
+                <h3 class="text-2xl font-extrabold bg-gradient-to-r from-yellow-300 to-amber-400 bg-clip-text text-transparent mb-1">
+                    恭喜通關！
+                </h3>
+                <p class="text-slate-400 text-sm mb-6">您的記憶力堪稱完美！</p>
+
+                <!-- Final Stats Grid -->
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                    <div class="bg-slate-800/80 border border-slate-700/50 rounded-2xl p-3">
+                        <span class="block text-xs text-slate-400 mb-0.5">最終時間</span>
+                        <span id="modal-time" class="text-xl font-bold font-mono text-purple-400">00:00</span>
+                    </div>
+                    <div class="bg-slate-800/80 border border-slate-700/50 rounded-2xl p-3">
+                        <span class="block text-xs text-slate-400 mb-0.5">總計步數</span>
+                        <span id="modal-moves" class="text-xl font-bold font-mono text-sky-400">0</span>
+                    </div>
+                    <div class="bg-slate-800/80 border border-slate-700/50 rounded-2xl p-3">
+                        <span class="block text-xs text-slate-400 mb-0.5">整體準確度</span>
+                        <span id="modal-accuracy" class="text-xl font-bold font-mono text-neongreen">100%</span>
+                    </div>
+                    <div class="bg-slate-800/80 border border-slate-700/50 rounded-2xl p-3">
+                        <span class="block text-xs text-slate-400 mb-0.5">難度模式</span>
+                        <span id="modal-diff" class="text-xl font-bold text-pink-400">4x4</span>
+                    </div>
+                </div>
+
+                <!-- Record status -->
+                <div id="new-record-banner" class="hidden py-2 px-4 bg-amber-500/10 border border-amber-500/30 rounded-xl mb-6 text-amber-300 text-sm font-semibold flex items-center justify-center gap-2">
+                    <span>👑 創下新的歷史紀錄！</span>
+                </div>
+
+                <button id="modal-close-btn" class="w-full py-3 rounded-xl bg-gradient-to-r from-sky-500 to-purple-600 hover:from-sky-400 hover:to-purple-500 text-white font-bold tracking-wide transition shadow-lg shadow-purple-500/20 active:scale-95">
+                    再挑戰一次
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Entry -->
+    <script>
+        // --- 1. Sound Engine (Web Audio API) ---
+        class SoundEngine {
+            constructor() {
+                this.ctx = null;
+                this.enabled = true;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            }
+
+            toggle(state) {
+                this.enabled = state !== undefined ? state : !this.enabled;
+                return this.enabled;
+            }
+
+            playFlip() {
+                if (!this.enabled) return;
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(220, now);
+                osc.frequency.exponentialRampToValueAtTime(440, now + 0.1);
+                
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.1);
+            }
+
+            playMatch() {
+                if (!this.enabled) return;
+                this.init();
+                const now = this.ctx.currentTime;
+                
+                // Play a bright major chord
+                const notes = [523.25, 659.25, 783.99]; // C5, E5, G5
+                notes.forEach((freq, index) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now + index * 0.05);
+                    
+                    gain.gain.setValueAtTime(0.1, now + index * 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + index * 0.05 + 0.3);
+                    
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + index * 0.05);
+                    osc.stop(now + index * 0.05 + 0.3);
+                });
+            }
+
+            playMismatch() {
+                if (!this.enabled) return;
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(180, now);
+                osc.frequency.setValueAtTime(120, now + 0.08);
+                
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            }
+
+            playWin() {
+                if (!this.enabled) return;
+                this.init();
+                const now = this.ctx.currentTime;
+                // Elegant ascending pattern
+                const melody = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50]; // C4 to C6
+                melody.forEach((freq, index) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + index * 0.08);
+                    
+                    gain.gain.setValueAtTime(0.12, now + index * 0.08);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + index * 0.08 + 0.4);
+                    
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + index * 0.08);
+                    osc.stop(now + index * 0.08 + 0.4);
+                });
+            }
+        }
+        const sound = new SoundEngine();
+
+        // --- 2. Particles / Confetti System ---
+        class ConfettiSystem {
+            constructor() {
+                this.canvas = document.getElementById('confetti-canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.particles = [];
+                this.active = false;
+                this.colors = ['#FFC107', '#E91E63', '#00BCD4', '#8BC34A', '#9C27B0', '#03A9F4'];
+                
+                window.addEventListener('resize', () => this.resize());
+                this.resize();
+            }
+
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+
+            spawn() {
+                this.particles = [];
+                for (let i = 0; i < 150; i++) {
+                    this.particles.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height - this.canvas.height,
+                        size: Math.random() * 8 + 4,
+                        color: this.colors[Math.floor(Math.random() * this.colors.length)],
+                        speedX: Math.random() * 4 - 2,
+                        speedY: Math.random() * 5 + 3,
+                        rotation: Math.random() * 360,
+                        rotationSpeed: Math.random() * 4 - 2
+                    });
+                }
+            }
+
+            start() {
+                this.spawn();
+                if (!this.active) {
+                    this.active = true;
+                    this.tick();
+                }
+            }
+
+            stop() {
+                this.active = false;
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            }
+
+            tick() {
+                if (!this.active) return;
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                let alive = false;
+                this.particles.forEach(p => {
+                    p.y += p.speedY;
+                    p.x += p.speedX;
+                    p.rotation += p.rotationSpeed;
+                    
+                    if (p.y < this.canvas.height) {
+                        alive = true;
+                        this.ctx.save();
+                        this.ctx.translate(p.x, p.y);
+                        this.ctx.rotate(p.rotation * Math.PI / 180);
+                        this.ctx.fillStyle = p.color;
+                        this.ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+                        this.ctx.restore();
+                    }
+                });
+
+                if (alive) {
+                    requestAnimationFrame(() => this.tick());
+                } else {
+                    this.active = false;
+                }
+            }
+        }
+        const confetti = new ConfettiSystem();
+
+        // --- 3. Themes Repository ---
+        const THEMES = {
+            space: {
+                icons: ['🚀', '🛸', '🛰️', '🪐', '🌟', '☄️', '🌙', '☀️', '💻', '📱', '⌚', '📷', '🎮', '🎧', '🕶️', '💡', '🔋', '🔌', '⚙️', '🧪', '🧬', '🔭', '📡', '🔮', '🗺️', '🧭', '⌛', '⏳', '🖨️', '💿', '📼', '👾'],
+                bgClass: 'from-cyan-500/20 to-blue-500/20 border-cyan-500/30'
+            },
+            animals: {
+                icons: ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🐔', '🐧', '🐦', '🐤', '🦅', '🦉', '🦇', '🐺', '🐗', '🐴', '🦄', '🐝', '🐛', '🦋', '🐌', '🐞', '🦀'],
+                bgClass: 'from-emerald-500/20 to-teal-500/20 border-emerald-500/30'
+            },
+            foods: {
+                icons: ['🍎', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🍒', '🍍', '🥥', '🥝', '🍅', '🍆', '🥑', '🥦', '🌽', '🥕', '🍞', '🧀', '🥚', '🍳', '🥞', '🥓', '🍔', '🍟', '🍕', '🌭', '🌮', '🍿', '🧁', '🍩', '🍪'],
+                bgClass: 'from-amber-500/20 to-orange-500/20 border-amber-500/30'
+            },
+            sports: {
+                icons: ['⚽', '🏀', '🏈', '⚾', '🥎', '🎾', '🏐', '🏉', '🎱', '🏓', '走', '🏹', '🥊', '🛹', '🚲', '🏆', '🎖️', '🧗', '🚣', '🏊', '🚴', '🏋️', '🤸', '🏂', '🏎️', '🎮', '🎳', '🎯', '🪁', '🎪', '🎨', '🎺'],
+                bgClass: 'from-rose-500/20 to-pink-500/20 border-rose-500/30'
+            }
+        };
+
+        // --- 4. Game State Management ---
+        const GAME = {
+            gridSize: 4, // default 4x4
+            theme: 'space',
+            cards: [],
+            flippedCards: [],
+            moves: 0,
+            matchesCount: 0,
+            startTime: null,
+            timerInterval: null,
+            elapsedTime: 0,
+            isPlaying: false,
+            bestRecords: {
+                '4': null, // Easy
+                '6': null, // Medium
+                '8': null  // Hard
+            }
+        };
+
+        // Initialize Highscores from localStorage
+        function loadHighscores() {
+            const saved = localStorage.getItem('mind_quest_highscores');
+            if (saved) {
+                try {
+                    GAME.bestRecords = JSON.parse(saved);
+                } catch(e) {
+                    console.error("Failed to parse saved highscores", e);
+                }
+            }
+            renderHighscores();
+        }
+
+        function saveHighScore(grid, seconds, moves) {
+            const currentBest = GAME.bestRecords[grid];
+            let isNewBest = false;
+            
+            // Criteria: Less moves first, then less time
+            if (!currentBest || moves < currentBest.moves || (moves === currentBest.moves && seconds < currentBest.seconds)) {
+                GAME.bestRecords[grid] = { seconds, moves, date: new Date().toLocaleDateString() };
+                localStorage.setItem('mind_quest_highscores', JSON.stringify(GAME.bestRecords));
+                isNewBest = true;
+            }
+            renderHighscores();
+            return isNewBest;
+        }
+
+        function renderHighscores() {
+            const container = document.getElementById('highscores-container');
+            const diffLabels = {
+                '4': { title: '簡單 (4x4)', color: 'text-purple-400' },
+                '6': { title: '中等 (6x6)', color: 'text-sky-400' },
+                '8': { title: '困難 (8x8)', color: 'text-pink-400' }
+            };
+
+            container.innerHTML = '';
+            
+            Object.keys(diffLabels).forEach(grid => {
+                const record = GAME.bestRecords[grid];
+                const labelInfo = diffLabels[grid];
+                
+                const wrapper = document.createElement('div');
+                wrapper.className = "flex justify-between items-center bg-slate-800/40 p-3 rounded-xl border border-slate-700/50 text-xs";
+                
+                if (record) {
+                    const formattedTime = formatTime(record.seconds);
+                    wrapper.innerHTML = `
+                        <div>
+                            <span class="font-bold ${labelInfo.color}">${labelInfo.title}</span>
+                            <span class="block text-slate-500 mt-0.5">達成日期: ${record.date}</span>
+                        </div>
+                        <div class="text-right font-mono">
+                            <div class="text-slate-200 font-bold">${record.moves} 步</div>
+                            <div class="text-slate-400">${formattedTime}</div>
+                        </div>
+                    `;
+                } else {
+                    wrapper.innerHTML = `
+                        <div>
+                            <span class="font-bold ${labelInfo.color}">${labelInfo.title}</span>
+                            <span class="block text-slate-500 mt-0.5">尚未挑戰</span>
+                        </div>
+                        <div class="text-right text-slate-500 italic">
+                            暫無紀錄
+                        </div>
+                    `;
+                }
+                container.appendChild(wrapper);
+            });
+        }
+
+        // --- 5. Game Core Mechanics ---
+
+        function initGameBoard() {
+            const board = document.getElementById('game-board');
+            board.innerHTML = '';
+            
+            // Adjust CSS grid column dynamic class
+            // Tailwind doesn't compile dynamic grid columns smoothly via string templating,
+            // so we inject inline style or swap built-in classes safely.
+            const gridCols = GAME.gridSize;
+            board.style.gridTemplateColumns = `repeat(${gridCols}, minmax(0, 1fr))`;
+
+            // Prepare card deck
+            const totalCards = gridCols * gridCols;
+            const pairsCount = totalCards / 2;
+            
+            // Pick a slice of icons from the active theme and double it
+            const themeData = THEMES[GAME.theme];
+            const selectedIcons = themeData.icons.slice(0, pairsCount);
+            const deck = [...selectedIcons, ...selectedIcons];
+            
+            // Shuffle
+            shuffle(deck);
+
+            GAME.cards = deck.map((icon, index) => ({
+                id: index,
+                val: icon,
+                flipped: false,
+                matched: false
+            }));
+
+            GAME.flippedCards = [];
+            GAME.moves = 0;
+            GAME.matchesCount = 0;
+            GAME.elapsedTime = 0;
+            GAME.isPlaying = false;
+            
+            clearInterval(GAME.timerInterval);
+            GAME.timerInterval = null;
+
+            updateStatsDisplay();
+
+            // Construct Cards
+            GAME.cards.forEach(card => {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'card relative cursor-pointer w-full h-full aspect-square group';
+                cardEl.dataset.id = card.id;
+
+                // Inner wrapper for 3D flip effect
+                const inner = document.createElement('div');
+                inner.className = 'card-inner w-full h-full relative duration-500 shadow-lg rounded-xl sm:rounded-2xl border border-slate-700/60';
+
+                // Back side of card (faced down)
+                const back = document.createElement('div');
+                back.className = 'card-back absolute inset-0 w-full h-full rounded-xl sm:rounded-2xl bg-slate-800 flex items-center justify-center text-slate-500 font-extrabold text-lg sm:text-2xl border-2 border-slate-700 group-hover:border-purple-500/60 group-hover:bg-slate-750 transition-all';
+                back.innerHTML = `
+                    <div class="relative w-full h-full flex items-center justify-center">
+                        <span class="opacity-15 group-hover:scale-110 transition duration-300">🧠</span>
+                        <!-- Corner decorations -->
+                        <div class="absolute top-2 left-2 w-2 h-2 border-t-2 border-l-2 border-slate-600 rounded-tl group-hover:border-purple-400"></div>
+                        <div class="absolute top-2 right-2 w-2 h-2 border-t-2 border-r-2 border-slate-600 rounded-tr group-hover:border-purple-400"></div>
+                        <div class="absolute bottom-2 left-2 w-2 h-2 border-b-2 border-l-2 border-slate-600 rounded-bl group-hover:border-purple-400"></div>
+                        <div class="absolute bottom-2 right-2 w-2 h-2 border-b-2 border-r-2 border-slate-600 rounded-br group-hover:border-purple-400"></div>
+                    </div>
+                `;
+
+                // Front side of card (revealed icon)
+                const front = document.createElement('div');
+                front.className = `card-front absolute inset-0 w-full h-full rounded-xl sm:rounded-2xl bg-gradient-to-br ${themeData.bgClass} border-2 border-slate-600 flex items-center justify-center`;
+                
+                // Scale text size based on grid size
+                let textSize = 'text-3xl sm:text-4xl md:text-5xl';
+                if (GAME.gridSize === 6) textSize = 'text-2xl sm:text-3xl md:text-4xl';
+                if (GAME.gridSize === 8) textSize = 'text-lg sm:text-xl md:text-2xl';
+                
+                front.innerHTML = `<span class="${textSize} filter drop-shadow-md select-none">${card.val}</span>`;
+
+                inner.appendChild(back);
+                inner.appendChild(front);
+                cardEl.appendChild(inner);
+
+                // Touch & Click handler
+                cardEl.addEventListener('click', () => handleCardClick(card.id, cardEl));
+                
+                board.appendChild(cardEl);
+            });
+        }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // --- 6. Interactivity & Card States ---
+
+        function handleCardClick(id, element) {
+            const card = GAME.cards[id];
+
+            // Ignore if card already flipped, matched, or if two cards are currently checking
+            if (card.flipped || card.matched || GAME.flippedCards.length >= 2) return;
+
+            // Initialize sound and timer on first click
+            sound.init();
+            if (!GAME.isPlaying) {
+                GAME.isPlaying = true;
+                GAME.startTime = Date.now();
+                GAME.timerInterval = setInterval(updateTimer, 1000);
+            }
+
+            // Flip Card
+            card.flipped = true;
+            element.classList.add('flipped');
+            sound.playFlip();
+
+            GAME.flippedCards.push({ card, element });
+
+            if (GAME.flippedCards.length === 2) {
+                GAME.moves++;
+                checkMatch();
+            }
+        }
+
+        function checkMatch() {
+            const [choice1, choice2] = GAME.flippedCards;
+
+            if (choice1.card.val === choice2.card.val) {
+                // Match Found!
+                choice1.card.matched = true;
+                choice2.card.matched = true;
+                GAME.matchesCount++;
+
+                setTimeout(() => {
+                    choice1.element.querySelector('.card-front').classList.add('match-success');
+                    choice2.element.querySelector('.card-front').classList.add('match-success');
+                    sound.playMatch();
+                    
+                    updateStatsDisplay();
+                    GAME.flippedCards = [];
+
+                    // Check Win Condition
+                    const totalPairs = (GAME.gridSize * GAME.gridSize) / 2;
+                    if (GAME.matchesCount === totalPairs) {
+                        handleVictory();
+                    }
+                }, 300);
+
+            } else {
+                // Not Match
+                setTimeout(() => {
+                    choice1.element.querySelector('.card-front').classList.add('match-fail');
+                    choice2.element.querySelector('.card-front').classList.add('match-fail');
+                    sound.playMismatch();
+                }, 300);
+
+                setTimeout(() => {
+                    // Turn cards back
+                    choice1.card.flipped = false;
+                    choice2.card.flipped = false;
+                    
+                    choice1.element.classList.remove('flipped');
+                    choice2.element.classList.remove('flipped');
+                    
+                    choice1.element.querySelector('.card-front').classList.remove('match-fail');
+                    choice2.element.querySelector('.card-front').classList.remove('match-fail');
+
+                    updateStatsDisplay();
+                    GAME.flippedCards = [];
+                }, 1000);
+            }
+        }
+
+        // --- 7. Metrics & UI Display Update ---
+
+        function updateTimer() {
+            if (!GAME.isPlaying) return;
+            GAME.elapsedTime = Math.floor((Date.now() - GAME.startTime) / 1000);
+            document.getElementById('time-counter').innerText = formatTime(GAME.elapsedTime);
+        }
+
+        function formatTime(totalSeconds) {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function updateStatsDisplay() {
+            // Moves
+            document.getElementById('moves-counter').innerText = GAME.moves;
+            
+            // Matched pairs
+            const totalPairs = (GAME.gridSize * GAME.gridSize) / 2;
+            document.getElementById('matched-counter').innerText = `${GAME.matchesCount} / ${totalPairs}`;
+
+            // Accuracy Rate = (Matched Pairs / Moves) * 100
+            let accuracy = 100;
+            if (GAME.moves > 0) {
+                accuracy = Math.round((GAME.matchesCount / GAME.moves) * 100);
+            }
+            document.getElementById('accuracy-counter').innerText = `${accuracy}%`;
+        }
+
+        function handleVictory() {
+            GAME.isPlaying = false;
+            clearInterval(GAME.timerInterval);
+            
+            sound.playWin();
+            confetti.start();
+
+            // Store highscore
+            const isNewBest = saveHighScore(GAME.gridSize, GAME.elapsedTime, GAME.moves);
+
+            // Populate Modal
+            document.getElementById('modal-time').innerText = formatTime(GAME.elapsedTime);
+            document.getElementById('modal-moves').innerText = GAME.moves;
+            
+            let accuracy = 100;
+            if (GAME.moves > 0) {
+                accuracy = Math.round(((GAME.gridSize * GAME.gridSize / 2) / GAME.moves) * 100);
+            }
+            document.getElementById('modal-accuracy').innerText = `${accuracy}%`;
+            document.getElementById('modal-diff').innerText = `${GAME.gridSize} × ${GAME.gridSize}`;
+
+            // Record Banner
+            const banner = document.getElementById('new-record-banner');
+            if (isNewBest) {
+                banner.classList.remove('hidden');
+            } else {
+                banner.classList.add('hidden');
+            }
+
+            // Show Modal
+            const modal = document.getElementById('win-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('.transform').classList.remove('scale-95');
+                modal.querySelector('.transform').classList.add('scale-100');
+            }, 50);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('win-modal');
+            modal.classList.add('opacity-0');
+            modal.querySelector('.transform').classList.remove('scale-100');
+            modal.querySelector('.transform').classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                confetti.stop();
+                initGameBoard();
+            }, 300);
+        }
+
+        // --- 8. Event Listeners Setup ---
+
+        document.getElementById('restart-btn').addEventListener('click', () => {
+            initGameBoard();
+        });
+
+        document.getElementById('modal-close-btn').addEventListener('click', () => {
+            closeModal();
+        });
+
+        // Theme Selection handler
+        document.getElementById('theme-selector').addEventListener('click', (e) => {
+            const btn = e.target.closest('.theme-btn');
+            if (!btn) return;
+
+            // Remove active style from all
+            document.querySelectorAll('.theme-btn').forEach(b => {
+                b.className = 'theme-btn py-2.5 px-3 rounded-xl border border-slate-700 bg-slate-800/40 hover:bg-slate-800 text-sm font-medium transition-all flex flex-col items-center justify-center gap-1 active:scale-95';
+            });
+
+            // Set active class style for the selected theme
+            const theme = btn.dataset.theme;
+            GAME.theme = theme;
+            
+            let activeColorClass = 'text-sky-400 border-sky-500/50 bg-sky-500/10';
+            if (theme === 'animals') activeColorClass = 'text-emerald-400 border-emerald-500/50 bg-emerald-500/10';
+            if (theme === 'foods') activeColorClass = 'text-amber-400 border-amber-500/50 bg-amber-500/10';
+            if (theme === 'sports') activeColorClass = 'text-rose-400 border-rose-500/50 bg-rose-500/10';
+            
+            btn.className = `theme-btn py-2.5 px-3 rounded-xl border text-sm font-medium transition-all flex flex-col items-center justify-center gap-1 active:scale-95 ${activeColorClass}`;
+            
+            initGameBoard();
+        });
+
+        // Difficulty Selection handler
+        document.getElementById('difficulty-selector').addEventListener('click', (e) => {
+            const btn = e.target.closest('.diff-btn');
+            if (!btn) return;
+
+            document.querySelectorAll('.diff-btn').forEach(b => {
+                b.className = 'diff-btn w-full py-2 px-4 rounded-xl border border-slate-700 bg-slate-800/40 hover:bg-slate-800 text-sm font-medium transition text-left flex justify-between items-center text-slate-300';
+                b.querySelector('span:last-child').className = 'text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-400 font-mono';
+            });
+
+            const grid = parseInt(btn.dataset.grid);
+            GAME.gridSize = grid;
+
+            let borderTheme = 'border-purple-500/50 bg-purple-500/10';
+            let labelColor = 'text-purple-300';
+            if (grid === 6) {
+                borderTheme = 'border-sky-500/50 bg-sky-500/10';
+                labelColor = 'text-sky-300';
+            } else if (grid === 8) {
+                borderTheme = 'border-pink-500/50 bg-pink-500/10';
+                labelColor = 'text-pink-300';
+            }
+
+            btn.className = `diff-btn w-full py-2 px-4 rounded-xl border ${borderTheme} text-sm font-medium transition text-left flex justify-between items-center text-slate-200`;
+            btn.querySelector('span:last-child').className = `text-xs px-2 py-0.5 rounded bg-slate-800 ${labelColor} font-mono`;
+
+            initGameBoard();
+        });
+
+        // Sound Toggle
+        document.getElementById('sound-btn').addEventListener('click', () => {
+            const onIcon = document.getElementById('sound-on-icon');
+            const offIcon = document.getElementById('sound-off-icon');
+            const isEnabled = sound.toggle();
+
+            if (isEnabled) {
+                onIcon.classList.remove('hidden');
+                offIcon.classList.add('hidden');
+            } else {
+                onIcon.classList.add('hidden');
+                offIcon.classList.remove('hidden');
+            }
+        });
+
+        // --- Run initialization on load ---
+        window.onload = function() {
+            loadHighscores();
+            initGameBoard();
+        }
+    </script>
+</body>
+</html>
