@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1A2B 終極猜數字</title>
+    <!-- 引入 Tailwind CSS 提供精美現代外觀 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+        /* 微動畫 */
+        .key-pop {
+            transition: transform 0.1s ease, background-color 0.1s ease;
+        }
+        .key-pop:active {
+            transform: scale(0.9);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between overflow-x-hidden">
+
+    <!-- 頂部導覽列 -->
+    <header class="bg-slate-800/80 backdrop-blur-md border-b border-slate-700/50 sticky top-0 z-40 px-4 py-3 shadow-lg">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <span class="text-2xl">🧠</span>
+                <h1 class="text-xl font-bold bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
+                    1A2B 智力對決
+                </h1>
+            </div>
+            <div class="flex space-x-2">
+                <button id="rules-btn" class="p-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm flex items-center transition">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    玩法說明
+                </button>
+                <button id="stats-btn" class="p-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm flex items-center transition">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    戰績統計
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 遊戲主要內容區 -->
+    <main class="max-w-4xl w-full mx-auto p-4 flex-1 flex flex-col md:flex-row gap-6 items-stretch justify-center">
+        
+        <!-- 左側：輸入與主控區 -->
+        <div class="flex-1 bg-slate-800/50 backdrop-blur rounded-2xl border border-slate-700/60 p-6 flex flex-col justify-between shadow-2xl relative overflow-hidden">
+            
+            <!-- 背景裝飾 -->
+            <div class="absolute -top-24 -left-24 w-48 h-48 bg-teal-500/10 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl"></div>
+
+            <!-- 上半部：狀態與模式切換 -->
+            <div class="relative z-10">
+                <div class="flex justify-between items-center mb-6">
+                    <!-- 模式切換 -->
+                    <div class="flex bg-slate-900 p-1 rounded-xl border border-slate-700">
+                        <button id="mode-classic" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 bg-teal-500 text-slate-900 shadow">
+                            經典模式
+                        </button>
+                        <button id="mode-challenge" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 transition-all duration-200">
+                            挑戰模式 (10次)
+                        </button>
+                    </div>
+
+                    <!-- 剩餘次數 (挑戰模式顯示) -->
+                    <div id="remaining-container" class="hidden text-right">
+                        <span class="text-xs text-slate-400">剩餘次數</span>
+                        <div id="remaining-count" class="text-xl font-black text-rose-400">10</div>
+                    </div>
+                </div>
+
+                <!-- 數字顯示框 -->
+                <div class="flex justify-center gap-3 mb-6">
+                    <div class="w-14 h-16 bg-slate-900 border-2 border-slate-700 rounded-xl flex items-center justify-center text-3xl font-black shadow-inner select-none transition-all duration-150" id="slot-0">-</div>
+                    <div class="w-14 h-16 bg-slate-900 border-2 border-slate-700 rounded-xl flex items-center justify-center text-3xl font-black shadow-inner select-none transition-all duration-150" id="slot-1">-</div>
+                    <div class="w-14 h-16 bg-slate-900 border-2 border-slate-700 rounded-xl flex items-center justify-center text-3xl font-black shadow-inner select-none transition-all duration-150" id="slot-2">-</div>
+                    <div class="w-14 h-16 bg-slate-900 border-2 border-slate-700 rounded-xl flex items-center justify-center text-3xl font-black shadow-inner select-none transition-all duration-150" id="slot-3">-</div>
+                </div>
+
+                <!-- 錯誤訊息提示 -->
+                <div class="h-6 text-center text-rose-400 text-sm font-semibold mb-4" id="feedback-msg"></div>
+            </div>
+
+            <!-- 下半部：特製虛擬鍵盤 -->
+            <div class="relative z-10">
+                <div class="grid grid-cols-3 gap-2 mb-2">
+                    <button class="key-pop h-12 bg-slate-700/80 hover:bg-slate-600 active:bg-slate-500 rounded-xl text-xl font-bold transition flex items-center justify-center shadow" data-val="1">1</button>
+                    <button class="key-pop h-12 bg-slate-700/80 hover:bg-slate-600 active:bg-slate-500 rounded-xl text-xl font-bold transition flex items-center justify-center shadow" data-val="2">2</button>
+                    <button class="key-pop h-12 bg-slate-700/80 hover:bg-slate-600 active:bg-slate-500 rounded-xl text-xl font-bold transition flex items-center justify-center shadow" data-val="3">3</button>
+                    <button class="key-pop h-12 bg-slate-700/80 hover:bg-slate-600 active:bg-slate-500 rounded-xl text-xl font-bold transition flex items-center justify-center shadow" data-val="4">4</button>
+                    <button class="key-pop h-12 bg-slate-700/80 hover:bg-slate-600 active:bg-slate-500 rounded-xl text-xl font-bold transition flex items-center justify-center shadow" data-val="5">5</button>
+                    <button class="key-pop h-12 bg-slate-700/80 hover:bg-slate-600 active:bg-slate-500 rounded-xl text-xl font-bold transition flex items-center justify-center shadow" data-val="6">6</button>
+                    <button class="key-pop h-12 bg-slate-700/80 hover:bg-slate-600 active:bg-slate-500 rounded-xl text-xl font-bold transition flex items-center justify-center shadow" data-val="7">7</button>
+                    <button class="key-pop h-12 bg-slate-700/80 hover:bg-slate-600 active:bg-slate-500 rounded-xl text-xl font-bold transition flex items-center justify-center shadow" data-val="8">8</button>
+                    <button class="key-pop h-12 bg-slate-700/80 hover:bg-slate-600 active:bg-slate-500 rounded-xl text-xl font-bold transition flex items-center justify-center shadow" data-val="9">9</button>
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                    <button class="key-pop h-12 bg-rose-900/60 hover:bg-rose-800 text-rose-200 rounded-xl font-bold transition flex items-center justify-center shadow" id="btn-backspace">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414A2 2 0 0010.828 19h7.344a2 2 0 002-2V7a2 2 0 00-2-2h-7.344a2 2 0 00-1.414.586L3 12z"></path></svg>
+                    </button>
+                    <button class="key-pop h-12 bg-slate-700/80 hover:bg-slate-600 active:bg-slate-500 rounded-xl text-xl font-bold transition flex items-center justify-center shadow" data-val="0">0</button>
+                    <button class="key-pop h-12 bg-teal-500 hover:bg-teal-400 active:bg-teal-600 text-slate-900 font-extrabold rounded-xl transition flex items-center justify-center shadow" id="btn-submit">
+                        送出
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右側：歷史猜測紀錄 -->
+        <div class="w-full md:w-80 bg-slate-800/50 backdrop-blur rounded-2xl border border-slate-700/60 p-5 flex flex-col shadow-2xl">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="font-bold text-slate-300 flex items-center">
+                    <span class="mr-2">🕒</span>猜測歷程
+                </h2>
+                <span id="history-badge" class="text-xs bg-slate-700 px-2.5 py-1 rounded-full text-slate-300">0 次</span>
+            </div>
+            
+            <!-- 歷程列表 -->
+            <div class="flex-1 min-h-[220px] max-h-[340px] md:max-h-none overflow-y-auto space-y-2 pr-1 custom-scrollbar" id="history-list">
+                <!-- 空白狀態 -->
+                <div class="h-full flex flex-col items-center justify-center text-slate-500 py-10" id="history-empty">
+                    <span class="text-4xl mb-2">📡</span>
+                    <p class="text-xs">尚未有任何猜測數據</p>
+                </div>
+            </div>
+
+            <!-- 控制功能按鈕 -->
+            <div class="mt-4 pt-4 border-t border-slate-700/50 flex space-x-2">
+                <button id="restart-btn" class="flex-1 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold rounded-xl transition flex items-center justify-center space-x-1 shadow-lg shadow-emerald-500/20">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 10H18M9 9h5v5"></path></svg>
+                    <span>重新開始</span>
+                </button>
+                <button id="cheat-btn" class="p-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-slate-300 transition" title="觀看答案 (Debug)">
+                    👁️
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部資訊 -->
+    <footer class="py-4 text-center text-slate-500 text-xs border-t border-slate-800 bg-slate-950/40">
+        <p>© 2026 1A2B 智力訓練器. 採用 HTML5 & Tailwind CSS 開發.</p>
+    </footer>
+
+    <!-- 彈出視窗：玩法說明 -->
+    <div id="rules-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 hidden">
+        <div class="bg-slate-800 border border-slate-700 p-6 rounded-2xl max-w-md w-full shadow-2xl relative">
+            <button class="absolute top-4 right-4 text-slate-400 hover:text-slate-100 transition" id="close-rules">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <h3 class="text-xl font-bold text-teal-400 mb-4 flex items-center">
+                <span>📖</span> <span class="ml-2">1A2B 遊戲規則</span>
+            </h3>
+            <div class="space-y-3 text-slate-300 text-sm leading-relaxed">
+                <p>1. 系統會隨機產生一個由 <strong class="text-teal-300">4 個不重複數字</strong>（0 到 9）組成的謎題。</p>
+                <p>2. 玩家每次猜測一組四位數，系統會比對答案並給予提示：</p>
+                <ul class="list-disc pl-5 space-y-1 bg-slate-900/50 p-3 rounded-lg border border-slate-700/40">
+                    <li><strong class="text-emerald-400">A</strong>：代表數字正確，且<strong class="text-emerald-400">位置正確</strong>。</li>
+                    <li><strong class="text-amber-400">B</strong>：代表數字正確，但<strong class="text-amber-400">位置不正確</strong>。</li>
+                </ul>
+                <p>3. 舉例：若謎題為 <strong class="text-teal-300">5291</strong>，您猜測 <strong class="text-teal-300">1250</strong>：</p>
+                <ul class="list-disc pl-5 text-slate-400">
+                    <li>2 的數字與位置都對 (1A)</li>
+                    <li>1 和 5 數字對但位置不對 (2B)</li>
+                    <li>所以提示為：<span class="text-emerald-400 font-bold">1A2B</span></li>
+                </ul>
+                <p>4. 當獲得 <strong class="text-emerald-400">4A0B</strong> 時，即解鎖密碼、贏得勝利！</p>
+            </div>
+            <button class="w-full mt-6 py-2.5 bg-teal-500 hover:bg-teal-400 text-slate-900 font-bold rounded-xl transition" id="close-rules-btn">
+                我明白了
+            </button>
+        </div>
+    </div>
+
+    <!-- 彈出視窗：戰績統計 -->
+    <div id="stats-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 hidden">
+        <div class="bg-slate-800 border border-slate-700 p-6 rounded-2xl max-w-md w-full shadow-2xl relative">
+            <button class="absolute top-4 right-4 text-slate-400 hover:text-slate-100 transition" id="close-stats">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <h3 class="text-xl font-bold text-emerald-400 mb-6 flex items-center">
+                <span>📊</span> <span class="ml-2">戰績統計面板</span>
+            </h3>
+            
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-center">
+                    <span class="text-xs text-slate-400">總遊玩場次</span>
+                    <div id="stat-total" class="text-2xl font-black text-slate-200 mt-1">0</div>
+                </div>
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-center">
+                    <span class="text-xs text-slate-400">勝率</span>
+                    <div id="stat-winrate" class="text-2xl font-black text-emerald-400 mt-1">0%</div>
+                </div>
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-center">
+                    <span class="text-xs text-slate-400">經典勝場 / 挑戰勝場</span>
+                    <div id="stat-modes" class="text-sm font-black text-slate-300 mt-2">0 / 0</div>
+                </div>
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-center">
+                    <span class="text-xs text-slate-400">平均猜測次數</span>
+                    <div id="stat-avg" class="text-2xl font-black text-teal-400 mt-1">0</div>
+                </div>
+            </div>
+
+            <div class="flex space-x-2">
+                <button class="flex-1 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 font-semibold rounded-xl transition text-sm" id="reset-stats-btn">
+                    清除數據
+                </button>
+                <button class="flex-1 py-2 bg-teal-500 hover:bg-teal-400 text-slate-900 font-bold rounded-xl transition text-sm" id="close-stats-btn">
+                    關閉
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 彈出視窗：結算畫面 (勝利/失敗) -->
+    <div id="result-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center z-50 p-4 hidden">
+        <div class="bg-slate-800 border-2 border-slate-700 p-8 rounded-3xl max-w-sm w-full shadow-2xl text-center relative overflow-hidden">
+            <!-- 閃爍背景 -->
+            <div id="result-glow" class="absolute inset-0 bg-emerald-500/5 pointer-events-none"></div>
+
+            <div id="result-emoji" class="text-6xl mb-4 animate-bounce">🏆</div>
+            <h3 id="result-title" class="text-2xl font-black mb-2 text-emerald-400">猜對了！</h3>
+            <p id="result-subtitle" class="text-slate-400 text-sm mb-6">您展現了驚人的邏輯思維</p>
+
+            <div class="bg-slate-900 py-4 px-6 rounded-2xl border border-slate-700 mb-6">
+                <span class="text-xs text-slate-400 block mb-1">正確答案</span>
+                <span id="result-answer" class="text-3xl font-black tracking-widest text-teal-300">----</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mb-6 text-sm">
+                <div class="bg-slate-700/40 p-2.5 rounded-xl">
+                    <span class="text-xs text-slate-400 block">所用次數</span>
+                    <span id="result-guesses" class="font-bold text-slate-200 text-lg">0 次</span>
+                </div>
+                <div class="bg-slate-700/40 p-2.5 rounded-xl">
+                    <span class="text-xs text-slate-400 block">所花時間</span>
+                    <span id="result-time" class="font-bold text-slate-200 text-lg">0 秒</span>
+                </div>
+            </div>
+
+            <button class="w-full py-3 bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 text-slate-950 font-black rounded-xl transition shadow-lg shadow-teal-500/20" id="result-restart-btn">
+                再玩一局！
+            </button>
+        </div>
+    </div>
+
+    <!-- 用於施放煙火的 Canvas -->
+    <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-50 w-full h-full"></canvas>
+
+    <!-- 核心 JS 邏輯 -->
+    <script>
+        // --- 狀態管理 ---
+        let state = {
+            secretCode: '',       // 謎題四位數答案
+            currentGuess: [],     // 當前使用者輸入的數字陣列
+            guesses: [],          // 歷史猜測歷程 [{guess: '1234', a: 1, b: 2}]
+            mode: 'classic',      // 模式：classic 經典 / challenge 挑戰
+            maxGuesses: 10,       // 挑戰模式最大次數
+            gameStatus: 'playing',// 狀態：playing 進行中 / won 獲勝 / lost 失敗
+            startTime: null,      // 開始時間
+            statistics: {
+                total: 0,
+                won: 0,
+                classicWins: 0,
+                challengeWins: 0,
+                totalGuessesInWins: 0
+            }
+        };
+
+        // --- Web Audio 原生音效合成器 ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playTone(freq, type, duration, vol = 0.1) {
+            try {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                
+                gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                console.log("音效撥放失敗，瀏覽器可能尚未授權音訊。");
+            }
+        }
+
+        const soundEffects = {
+            tap: () => playTone(600, 'sine', 0.08, 0.15),
+            backspace: () => playTone(450, 'sine', 0.1, 0.15),
+            warning: () => {
+                playTone(220, 'sawtooth', 0.15, 0.1);
+                setTimeout(() => playTone(200, 'sawtooth', 0.15, 0.1), 100);
+            },
+            wrongGuess: () => {
+                playTone(330, 'triangle', 0.2, 0.15);
+                setTimeout(() => playTone(293, 'triangle', 0.25, 0.15), 150);
+            },
+            win: () => {
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 琶音
+                notes.forEach((freq, idx) => {
+                    setTimeout(() => playTone(freq, 'sine', 0.4, 0.2), idx * 120);
+                });
+            },
+            lose: () => {
+                const notes = [293.66, 277.18, 261.63, 233.08]; // D4, C#4, C4, Bb3 下行
+                notes.forEach((freq, idx) => {
+                    setTimeout(() => playTone(freq, 'sawtooth', 0.5, 0.12), idx * 180);
+                });
+            }
+        };
+
+        // --- Canvas 煙火粒子特效 (不依賴外部庫) ---
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let animationFrameId = null;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 6 + 4;
+                this.speedX = Math.random() * 8 - 4;
+                this.speedY = Math.random() * -10 - 5;
+                this.gravity = 0.2;
+                this.color = `hsl(${Math.random() * 360}, 80%, 60%)`;
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = Math.random() * 10 - 5;
+                this.opacity = 1;
+            }
+            update() {
+                this.speedY += this.gravity;
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.rotation += this.rotationSpeed;
+                this.opacity -= 0.01;
+            }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate((this.rotation * Math.PI) / 180);
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.opacity;
+                ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+                ctx.restore();
+            }
+        }
+
+        function spawnConfetti() {
+            particles = [];
+            // 在螢幕左下和右下兩側向上噴灑
+            for (let i = 0; i < 70; i++) {
+                particles.push(new Particle(50, canvas.height - 50));
+                particles.push(new Particle(canvas.width - 50, canvas.height - 50));
+            }
+            animateParticles();
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, idx) => {
+                p.update();
+                p.draw();
+                if (p.opacity <= 0) {
+                    particles.splice(idx, 1);
+                }
+            });
+
+            if (particles.length > 0) {
+                animationFrameId = requestAnimationFrame(animateParticles);
+            } else {
+                cancelAnimationFrame(animationFrameId);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        // --- 本地儲存 (戰績) 系統 ---
+        function loadStats() {
+            const saved = localStorage.getItem('1a2b_stats_data');
+            if (saved) {
+                try {
+                    state.statistics = JSON.parse(saved);
+                } catch (e) {
+                    console.error("無法載入戰績", e);
+                }
+            }
+        }
+
+        function saveStats() {
+            localStorage.setItem('1a2b_stats_data', JSON.stringify(state.statistics));
+        }
+
+        // --- 核心遊戲流程與演算法 ---
+
+        // 1. 產生一組 4 個不重複數字的謎題
+        function generateSecretCode() {
+            const pool = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+            let result = '';
+            for (let i = 0; i < 4; i++) {
+                const randIndex = Math.floor(Math.random() * pool.length);
+                result += pool.splice(randIndex, 1)[0];
+            }
+            return result;
+        }
+
+        // 2. 比對輸入與正確答案，計算 A 與 B 的數量
+        function check1A2B(secret, guess) {
+            let a = 0;
+            let b = 0;
+            for (let i = 0; i < 4; i++) {
+                if (guess[i] === secret[i]) {
+                    a++;
+                } else if (secret.includes(guess[i])) {
+                    b++;
+                }
+            }
+            return { a, b };
+        }
+
+        // 3. 遊戲初始化 / 重開
+        function initGame() {
+            state.secretCode = generateSecretCode();
+            state.currentGuess = [];
+            state.guesses = [];
+            state.gameStatus = 'playing';
+            state.startTime = new Date();
+            
+            // UI 更新
+            updateSlots();
+            renderHistory();
+            clearFeedback();
+            
+            if (state.mode === 'challenge') {
+                document.getElementById('remaining-container').classList.remove('hidden');
+                document.getElementById('remaining-count').textContent = state.maxGuesses;
+            } else {
+                document.getElementById('remaining-container').classList.add('hidden');
+            }
+
+            // 確保關閉結算視窗
+            document.getElementById('result-modal').classList.add('hidden');
+        }
+
+        // --- UI 操作渲染與更新 ---
+
+        // 更新填寫槽
+        function updateSlots() {
+            for (let i = 0; i < 4; i++) {
+                const slot = document.getElementById(`slot-${i}`);
+                if (state.currentGuess[i] !== undefined) {
+                    slot.textContent = state.currentGuess[i];
+                    slot.classList.remove('border-slate-700', 'text-slate-500');
+                    slot.classList.add('border-teal-500', 'text-teal-400', 'scale-105');
+                } else {
+                    slot.textContent = '-';
+                    slot.classList.remove('border-teal-500', 'text-teal-400', 'scale-105');
+                    slot.classList.add('border-slate-700', 'text-slate-500');
+                }
+            }
+        }
+
+        // 顯示回饋/錯誤訊息
+        function showFeedback(msg, isError = true) {
+            const el = document.getElementById('feedback-msg');
+            el.textContent = msg;
+            if (isError) {
+                el.className = "h-6 text-center text-rose-400 text-sm font-semibold mb-4 animate-pulse";
+            } else {
+                el.className = "h-6 text-center text-teal-400 text-sm font-semibold mb-4";
+            }
+        }
+
+        function clearFeedback() {
+            document.getElementById('feedback-msg').textContent = '';
+        }
+
+        // 渲染歷史紀錄清單
+        function renderHistory() {
+            const list = document.getElementById('history-list');
+            const emptyState = document.getElementById('history-empty');
+            const badge = document.getElementById('history-badge');
+
+            // 更新個數徽章
+            badge.textContent = `${state.guesses.length} 次`;
+
+            if (state.guesses.length === 0) {
+                emptyState.classList.remove('hidden');
+                // 清空清單內除了空狀態之外的元素
+                const items = list.querySelectorAll('.history-item');
+                items.forEach(el => el.remove());
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+
+            // 清空目前的列表元素
+            const items = list.querySelectorAll('.history-item');
+            items.forEach(el => el.remove());
+
+            // 重新填入，由新到舊排列
+            state.guesses.slice().reverse().forEach((item, index) => {
+                // 原順序 index 計算
+                const actualNum = state.guesses.length - index;
+
+                const row = document.createElement('div');
+                row.className = "history-item bg-slate-900 border border-slate-700/60 p-3 rounded-xl flex justify-between items-center animate-fade-in";
+                
+                // 區分 A 和 B 的顏色顯示
+                let resultBadge = '';
+                if (item.a === 4) {
+                    resultBadge = `<span class="bg-emerald-500 text-slate-950 font-black px-2.5 py-1 rounded-lg text-sm tracking-wider">4A 0B 👑</span>`;
+                } else {
+                    resultBadge = `
+                        <div class="flex space-x-1 font-mono text-sm font-extrabold">
+                            <span class="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-2 py-0.5 rounded-md">${item.a}A</span>
+                            <span class="bg-amber-500/10 border border-amber-500/30 text-amber-400 px-2 py-0.5 rounded-md">${item.b}B</span>
+                        </div>
+                    `;
+                }
+
+                row.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="text-xs text-slate-500 font-mono">#${actualNum.toString().padStart(2, '0')}</span>
+                        <span class="text-xl font-bold tracking-widest text-slate-200 font-mono">${item.guess}</span>
+                    </div>
+                    <div>
+                        ${resultBadge}
+                    </div>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        // 輸入數字處理
+        function handleNumberInput(num) {
+            if (state.gameStatus !== 'playing') return;
+            
+            // 檢查重複
+            if (state.currentGuess.includes(num)) {
+                soundEffects.warning();
+                showFeedback(`數字 ${num} 已經輸入過了！`);
+                return;
+            }
+
+            if (state.currentGuess.length < 4) {
+                state.currentGuess.push(num);
+                soundEffects.tap();
+                clearFeedback();
+                updateSlots();
+            } else {
+                soundEffects.warning();
+                showFeedback('已經填滿四個數字，請點擊送出！');
+            }
+        }
+
+        // 倒退鍵
+        function handleBackspace() {
+            if (state.gameStatus !== 'playing') return;
+            if (state.currentGuess.length > 0) {
+                state.currentGuess.pop();
+                soundEffects.backspace();
+                clearFeedback();
+                updateSlots();
+            }
+        }
+
+        // 送出答案
+        function handleSubmit() {
+            if (state.gameStatus !== 'playing') return;
+
+            if (state.currentGuess.length < 4) {
+                soundEffects.warning();
+                showFeedback('請填滿 4 個不重複數字再送出！');
+                return;
+            }
+
+            const guessStr = state.currentGuess.join('');
+            const result = check1A2B(state.secretCode, guessStr);
+
+            // 加入歷史紀錄
+            state.guesses.push({
+                guess: guessStr,
+                a: result.a,
+                b: result.b
+            });
+
+            // 清空當前輸入
+            state.currentGuess = [];
+            updateSlots();
+            renderHistory();
+
+            // 判斷勝負
+            if (result.a === 4) {
+                handleGameOver(true);
+            } else {
+                if (state.mode === 'challenge') {
+                    const remaining = state.maxGuesses - state.guesses.length;
+                    document.getElementById('remaining-count').textContent = remaining;
+                    if (remaining <= 0) {
+                        handleGameOver(false);
+                    } else {
+                        soundEffects.wrongGuess();
+                        showFeedback(`猜得好！結果為 ${result.a}A${result.b}B，加油！`, false);
+                    }
+                } else {
+                    soundEffects.wrongGuess();
+                    showFeedback(`答案不正確。目前結果為：${result.a}A${result.b}B`, false);
+                }
+            }
+        }
+
+        // 處理遊戲結束
+        function handleGameOver(isWin) {
+            state.gameStatus = isWin ? 'won' : 'lost';
+            const endTime = new Date();
+            const timeDiff = Math.round((endTime - state.startTime) / 1000); // 算出秒數
+
+            // 更新統計數據
+            state.statistics.total += 1;
+            if (isWin) {
+                state.statistics.won += 1;
+                state.statistics.totalGuessesInWins += state.guesses.length;
+                if (state.mode === 'classic') {
+                    state.statistics.classicWins += 1;
+                } else {
+                    state.statistics.challengeWins += 1;
+                }
+                soundEffects.win();
+                spawnConfetti();
+            } else {
+                soundEffects.lose();
+            }
+            saveStats();
+
+            // 顯示結算彈出視窗
+            setTimeout(() => {
+                const modal = document.getElementById('result-modal');
+                const emoji = document.getElementById('result-emoji');
+                const title = document.getElementById('result-title');
+                const subtitle = document.getElementById('result-subtitle');
+                const glow = document.getElementById('result-glow');
+
+                document.getElementById('result-answer').textContent = state.secretCode;
+                document.getElementById('result-guesses').textContent = `${state.guesses.length} 次`;
+                document.getElementById('result-time').textContent = `${timeDiff} 秒`;
+
+                if (isWin) {
+                    emoji.textContent = '🏆';
+                    title.textContent = '破解密碼成功！';
+                    title.className = "text-2xl font-black mb-2 text-emerald-400";
+                    subtitle.textContent = '您的邏輯推演完美無缺！';
+                    glow.className = "absolute inset-0 bg-emerald-500/10 pointer-events-none";
+                } else {
+                    emoji.textContent = '💥';
+                    title.textContent = '解密失敗！';
+                    title.className = "text-2xl font-black mb-2 text-rose-400";
+                    subtitle.textContent = '別氣餒，下一次你一定能解出來！';
+                    glow.className = "absolute inset-0 bg-rose-500/10 pointer-events-none";
+                }
+
+                modal.classList.remove('hidden');
+            }, 600);
+        }
+
+        // 更新統計視窗數值
+        function renderStatsModal() {
+            const stats = state.statistics;
+            const winRate = stats.total > 0 ? Math.round((stats.won / stats.total) * 100) : 0;
+            const avgGuesses = stats.won > 0 ? (stats.totalGuessesInWins / stats.won).toFixed(1) : 0;
+
+            document.getElementById('stat-total').textContent = stats.total;
+            document.getElementById('stat-winrate').textContent = `${winRate}%`;
+            document.getElementById('stat-modes').textContent = `${stats.classicWins} / ${stats.challengeWins}`;
+            document.getElementById('stat-avg').textContent = `${avgGuesses} 次`;
+        }
+
+        // --- 事件監聽器綁定 ---
+
+        // 綁定虛擬鍵盤點擊
+        document.querySelectorAll('[data-val]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                handleNumberInput(btn.getAttribute('data-val'));
+            });
+        });
+
+        // 退格與送出按鈕
+        document.getElementById('btn-backspace').addEventListener('click', handleBackspace);
+        document.getElementById('btn-submit').addEventListener('click', handleSubmit);
+
+        // 重新開始
+        document.getElementById('restart-btn').addEventListener('click', () => {
+            soundEffects.tap();
+            initGame();
+        });
+
+        // 鍵盤物理案件監聽支援
+        window.addEventListener('keydown', (e) => {
+            if (document.getElementById('result-modal').classList.contains('hidden') === false) {
+                // 如果結算視窗開著，按 Enter 重開
+                if (e.key === 'Enter') {
+                    initGame();
+                }
+                return;
+            }
+
+            if (e.key >= '0' && e.key <= '9') {
+                handleNumberInput(e.key);
+            } else if (e.key === 'Backspace') {
+                handleBackspace();
+            } else if (e.key === 'Enter') {
+                handleSubmit();
+            }
+        });
+
+        // 模式切換邏輯
+        const modeClassicBtn = document.getElementById('mode-classic');
+        const modeChallengeBtn = document.getElementById('mode-challenge');
+
+        function setMode(mode) {
+            if (state.mode === mode) return;
+            soundEffects.tap();
+            state.mode = mode;
+
+            if (mode === 'classic') {
+                modeClassicBtn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 bg-teal-500 text-slate-900 shadow";
+                modeChallengeBtn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 transition-all duration-200";
+            } else {
+                modeChallengeBtn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 bg-teal-500 text-slate-900 shadow";
+                modeClassicBtn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 transition-all duration-200";
+            }
+            initGame();
+        }
+
+        modeClassicBtn.addEventListener('click', () => setMode('classic'));
+        modeChallengeBtn.addEventListener('click', () => setMode('challenge'));
+
+        // 玩法說明 Modal
+        const rulesModal = document.getElementById('rules-modal');
+        document.getElementById('rules-btn').addEventListener('click', () => {
+            soundEffects.tap();
+            rulesModal.classList.remove('hidden');
+        });
+        document.getElementById('close-rules').addEventListener('click', () => rulesModal.classList.add('hidden'));
+        document.getElementById('close-rules-btn').addEventListener('click', () => rulesModal.classList.add('hidden'));
+
+        // 戰績統計 Modal
+        const statsModal = document.getElementById('stats-modal');
+        document.getElementById('stats-btn').addEventListener('click', () => {
+            soundEffects.tap();
+            renderStatsModal();
+            statsModal.classList.remove('hidden');
+        });
+        document.getElementById('close-stats').addEventListener('click', () => statsModal.classList.add('hidden'));
+        document.getElementById('close-stats-btn').addEventListener('click', () => statsModal.classList.add('hidden'));
+        document.getElementById('reset-stats-btn').addEventListener('click', () => {
+            soundEffects.backspace();
+            state.statistics = {
+                total: 0,
+                won: 0,
+                classicWins: 0,
+                challengeWins: 0,
+                totalGuessesInWins: 0
+            };
+            saveStats();
+            renderStatsModal();
+        });
+
+        // 結算視窗重玩
+        document.getElementById('result-restart-btn').addEventListener('click', () => {
+            soundEffects.tap();
+            initGame();
+        });
+
+        // 作弊/提示按鈕：短暫顯示答案 (Debug 或卡關用)
+        let cheatTimeout = null;
+        document.getElementById('cheat-btn').addEventListener('click', () => {
+            soundEffects.tap();
+            showFeedback(`偷看答案：【 ${state.secretCode} 】`, false);
+            if (cheatTimeout) clearTimeout(cheatTimeout);
+            cheatTimeout = setTimeout(() => {
+                clearFeedback();
+            }, 3000);
+        });
+
+        // 點擊 Modal 背景關閉
+        window.addEventListener('click', (e) => {
+            if (e.target === rulesModal) rulesModal.classList.add('hidden');
+            if (e.target === statsModal) statsModal.classList.add('hidden');
+        });
+
+        // --- 初始化啟動 ---
+        window.onload = function() {
+            loadStats();
+            initGame();
+        }
+    </script>
+</body>
+</html>
