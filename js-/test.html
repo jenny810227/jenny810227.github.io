@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 智慧前端驗收單產生器</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght=300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- html2pdf.js - 用於完全繞過 iframe 沙盒列印限制，在客戶端編譯並下載 PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f8fafc;
+        }
+        /* 列印樣式優化 */
+        @media print {
+            body {
+                background-color: #ffffff;
+                color: #000000;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-full-width {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
+            .page-break {
+                page-break-before: always;
+            }
+            input, textarea, select {
+                border: none !important;
+                background: transparent !important;
+                resize: none !important;
+                outline: none !important;
+            }
+            /* 隱藏下拉箭頭與單選框的邊框 */
+            select {
+                appearance: none;
+                -webkit-appearance: none;
+            }
+        }
+        /* 滾動條樣式 */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- 導航列 -->
+    <header class="bg-slate-900 text-white shadow-md no-print">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-blue-600 p-2.5 rounded-lg text-white">
+                    <i class="fa-solid fa-file-signature text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-wider">AI 智慧前端驗收單產生器</h1>
+                    <p class="text-xs text-slate-400">貼上前端程式碼，自動分析互動行為並輸出專業驗收文件</p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="loadSampleCode('login')" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded border border-slate-700 transition">
+                    <i class="fa-solid fa-code mr-1"></i> 範例1：登入頁面
+                </button>
+                <button onclick="loadSampleCode('cart')" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded border border-slate-700 transition">
+                    <i class="fa-solid fa-code mr-1"></i> 範例2：購物車
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要內容區 -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- 左側：程式碼與設定輸入 (在列印時隱藏) -->
+        <section class="lg:col-span-5 flex flex-col gap-5 no-print">
+            
+            <!-- 專案資訊 -->
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                <h2 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info text-blue-600"></i>
+                    基本驗收資訊
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">專案/系統名稱</label>
+                        <input id="projName" type="text" value="客製化前端系統開發案" class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">功能/版本</label>
+                        <input id="projVersion" type="text" value="v1.0.0 (初版驗收)" class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">開發單位/工程師</label>
+                        <input id="developer" type="text" value="前端開發小組" class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">驗收客戶/代表</label>
+                        <input id="client" type="text" value="大洋科技 專案經理" class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 程式碼貼入口 -->
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex-1 flex flex-col min-h-[400px]">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-code text-blue-600"></i>
+                        貼上您的前端程式碼
+                    </h2>
+                    <span class="text-xs text-slate-400">支援 HTML, React, JS, Vue...</span>
+                </div>
+                
+                <textarea id="codeInput" placeholder="請將您開發好的前端 HTML、React、JS 或 Vue 程式碼貼於此處...&#10;系統將使用 AI 自動為您規劃對應的測試步驟與驗收指標。" class="w-full flex-1 p-3 font-mono text-xs bg-slate-900 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none mb-4"></textarea>
+
+                <!-- 產生按鈕與狀態 -->
+                <div class="flex flex-col gap-2">
+                    <button onclick="generateAcceptanceForm()" id="btnGenerate" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-sm transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span>AI 分析程式碼並生成驗收單</span>
+                    </button>
+                    
+                    <div id="aiStatus" class="hidden text-xs text-center py-2 px-3 rounded-lg bg-blue-50 text-blue-700 border border-blue-100 items-center justify-center gap-2">
+                        <i class="fa-solid fa-spinner animate-spin"></i>
+                        <span id="aiStatusText">AI 正在深度解析您的程式碼結構中，請稍候...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 操作提醒說明 -->
+            <div class="bg-slate-100 border border-slate-200 p-4 rounded-xl text-xs text-slate-600 flex gap-2">
+                <i class="fa-solid fa-circle-question text-slate-400 text-sm mt-0.5"></i>
+                <div>
+                    <p class="font-bold mb-1">使用秘訣：</p>
+                    <ul class="list-decimal list-inside space-y-1">
+                        <li>AI 辨識出的項目會在右側即時生成，您可以手動細修文字。</li>
+                        <li>下方設有「手寫簽名板」，讓使用者能透過觸控或滑鼠直接完成簽署。</li>
+                        <li>點擊「列印 / 匯出 PDF」，利用系統預設格式輸出成完美的合約文件。</li>
+                    </ul>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- 右側：生成的驗收單預覽 (列印時會放大至全寬) -->
+        <section id="previewSection" class="lg:col-span-7 flex flex-col gap-4 print-full-width">
+            
+            <!-- 預覽上方工具列 (列印時隱藏) -->
+            <div class="bg-white p-3 rounded-xl shadow-sm border border-slate-200 flex flex-wrap justify-between items-center gap-3 no-print">
+                <div class="flex items-center gap-2">
+                    <span class="flex h-3 w-3 relative">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                    </span>
+                    <span class="text-sm font-bold text-slate-700">驗收單預覽與編輯區</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="addNewCheckItem()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-1.5 rounded-lg border border-slate-300 transition">
+                        <i class="fa-solid fa-plus mr-1"></i> 新增項目
+                    </button>
+                    <button onclick="openPrintModal()" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-print"></i> 列印 / 匯出 PDF
+                    </button>
+                </div>
+            </div>
+
+            <!-- 驗收單主紙本 -->
+            <div id="printSheet" class="bg-white p-6 sm:p-10 rounded-xl shadow-md border border-slate-200 print-full-width text-slate-800 flex flex-col gap-6">
+                
+                <!-- 驗收單標題 -->
+                <div class="text-center border-b-2 border-slate-900 pb-5">
+                    <h1 class="text-2xl sm:text-3xl font-extrabold tracking-widest text-slate-900" id="sheetMainTitle">系統功能驗收確認單</h1>
+                    <p class="text-sm text-slate-500 mt-1" id="sheetSubTitle">System Functional Acceptance Test Form</p>
+                </div>
+
+                <!-- 專案/系統基本資訊表格 -->
+                <div>
+                    <h3 class="text-sm font-bold text-slate-900 border-l-4 border-slate-800 pl-2 mb-2">一、 基本資訊</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 border border-slate-300 rounded-lg overflow-hidden text-sm">
+                        <div class="flex border-b md:border-b-0 border-slate-300">
+                            <div class="w-1/3 bg-slate-50 p-3 font-semibold text-slate-600 border-r border-slate-300">專案名稱</div>
+                            <div class="w-2/3 p-3 font-medium text-slate-900" id="valProjName">客製化前端系統開發案</div>
+                        </div>
+                        <div class="flex border-b border-slate-300 md:border-b-0">
+                            <div class="w-1/3 bg-slate-50 p-3 font-semibold text-slate-600 border-r border-slate-300">驗收版本</div>
+                            <div class="w-2/3 p-3 text-slate-900" id="valProjVersion">v1.0.0 (初版驗收)</div>
+                        </div>
+                        <div class="flex border-b md:border-b-0 border-slate-300 border-t md:border-t">
+                            <div class="w-1/3 bg-slate-50 p-3 font-semibold text-slate-600 border-r border-slate-300">開發單位</div>
+                            <div class="w-2/3 p-3 text-slate-900" id="valDeveloper">前端開發小組</div>
+                        </div>
+                        <div class="flex border-t md:border-t">
+                            <div class="w-1/3 bg-slate-50 p-3 font-semibold text-slate-600 border-r border-slate-300">驗收對象</div>
+                            <div class="w-2/3 p-3 text-slate-900" id="valClient">大洋科技 專案經理</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 核心功能驗收表格 -->
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-sm font-bold text-slate-900 border-l-4 border-slate-800 pl-2">二、 功能性驗收指標</h3>
+                        <span class="text-xs text-slate-400 no-print">（以下表格內容皆可點擊直接編輯）</span>
+                    </div>
+                    <div class="overflow-x-auto border border-slate-300 rounded-lg">
+                        <table class="w-full text-left text-sm border-collapse">
+                            <thead>
+                                <tr class="bg-slate-900 text-white text-xs uppercase">
+                                    <th class="p-3 w-12 text-center">項次</th>
+                                    <th class="p-3 w-32">功能模組</th>
+                                    <th class="p-3">測試操作步驟</th>
+                                    <th class="p-3">預期結果</th>
+                                    <th class="p-3 w-28 text-center">驗收結果</th>
+                                    <th class="p-3 w-12 text-center no-print">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="checklistTableBody">
+                                <!-- 預設或 AI 產出的驗收項目 -->
+                                <tr>
+                                    <td colspan="6" class="p-8 text-center text-slate-400">
+                                        <i class="fa-solid fa-terminal text-3xl mb-2 block"></i>
+                                        請在左側貼上程式碼，並點擊「AI 分析並生成驗收單」
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 非功能性基礎檢驗 -->
+                <div>
+                    <h3 class="text-sm font-bold text-slate-900 border-l-4 border-slate-800 pl-2 mb-2">三、 基礎通用環境與非功能性檢驗</h3>
+                    <div class="overflow-x-auto border border-slate-300 rounded-lg">
+                        <table class="w-full text-left text-sm border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 text-xs">
+                                    <th class="p-3 w-12 text-center">項次</th>
+                                    <th class="p-3 w-32">檢驗指標</th>
+                                    <th class="p-3">測試說明</th>
+                                    <th class="p-3 w-28 text-center">驗收結果</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-slate-200">
+                                    <td class="p-3 text-center text-slate-500 font-mono">G1</td>
+                                    <td class="p-3 font-semibold">瀏覽器相容性</td>
+                                    <td class="p-3 text-slate-600">在主流瀏覽器（Chrome, Edge, Safari）中頁面能正常加載、樣式無跑版且功能完好。</td>
+                                    <td class="p-3 text-center">
+                                        <select class="text-xs bg-slate-50 border border-slate-300 rounded px-1.5 py-1 text-center font-bold text-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                                            <option value="pass">✓ 合格</option>
+                                            <option value="fail">✗ 不合格</option>
+                                            <option value="na">- 免驗</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr class="border-b border-slate-200">
+                                    <td class="p-3 text-center text-slate-500 font-mono">G2</td>
+                                    <td class="p-3 font-semibold">響應式版面 (RWD)</td>
+                                    <td class="p-3 text-slate-600">在桌機、平板、手機等不同尺寸的螢幕下，元件能自動排列、自適應寬度，無破版問題。</td>
+                                    <td class="p-3 text-center">
+                                        <select class="text-xs bg-slate-50 border border-slate-300 rounded px-1.5 py-1 text-center font-bold text-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                                            <option value="pass" selected>✓ 合格</option>
+                                            <option value="fail">✗ 不合格</option>
+                                            <option value="na">- 免驗</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr class="border-b border-slate-200">
+                                    <td class="p-3 text-center text-slate-500 font-mono">G3</td>
+                                    <td class="p-3 font-semibold">效能與加載</td>
+                                    <td class="p-3 text-slate-600">系統首次載入速度流暢，按鈕交互、頁面跳轉與彈窗觸發均無明顯卡頓。</td>
+                                    <td class="p-3 text-center">
+                                        <select class="text-xs bg-slate-50 border border-slate-300 rounded px-1.5 py-1 text-center font-bold text-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                                            <option value="pass">✓ 合格</option>
+                                            <option value="fail">✗ 不合格</option>
+                                            <option value="na">- 免驗</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 text-center text-slate-500 font-mono">G4</td>
+                                    <td class="p-3 font-semibold">控制台報錯</td>
+                                    <td class="p-3 text-slate-600">開啟瀏覽器開發者工具 (F12)，Console 視窗中無紅字錯誤 (Uncaught Error)。</td>
+                                    <td class="p-3 text-center">
+                                        <select class="text-xs bg-slate-50 border border-slate-300 rounded px-1.5 py-1 text-center font-bold text-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                                            <option value="pass">✓ 合格</option>
+                                            <option value="fail">✗ 不合格</option>
+                                            <option value="na">- 免驗</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 備註與說明 -->
+                <div>
+                    <h3 class="text-sm font-bold text-slate-900 border-l-4 border-slate-800 pl-2 mb-2">四、 補充備註與修正協議</h3>
+                    <textarea id="valNotes" placeholder="若驗收當下有任何需要微調、後續優化的事項，可直接登載於此欄位..." class="w-full text-sm p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 h-20 bg-slate-50"></textarea>
+                </div>
+
+                <!-- 簽章區域 (內建 Canvas 手寫簽名) -->
+                <div class="mt-4 pt-4 border-t border-slate-200">
+                    <h3 class="text-sm font-bold text-slate-900 border-l-4 border-slate-800 pl-2 mb-4">五、 雙方簽名確認</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- 開發商簽章 -->
+                        <div class="flex flex-col gap-2">
+                            <span class="text-sm font-semibold text-slate-700">乙方（開發單位）代表簽章：</span>
+                            <div class="border border-dashed border-slate-300 rounded-lg p-3 bg-slate-50 flex flex-col items-center justify-center min-h-[120px]">
+                                <span class="text-xs text-slate-400 select-none pointer-events-none mb-1">乙方蓋章 / 數位簽署</span>
+                                <input id="valDeveloperSign" type="text" value="前端開發小組 專案代表" class="text-center font-semibold text-base text-slate-700 border-b border-slate-300 pb-1 focus:outline-none w-3/4">
+                                <span class="text-[10px] text-slate-400 mt-2">簽署日期：<span class="current-date">2026/06/30</span></span>
+                            </div>
+                        </div>
+
+                        <!-- 委託商/客戶簽章 (含 Canvas 簽名功能) -->
+                        <div class="flex flex-col gap-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-semibold text-slate-700">甲方（驗收客戶）手寫簽名：</span>
+                                <button type="button" onclick="clearSignature()" class="no-print text-[10px] text-red-500 hover:text-red-700 font-bold border border-red-200 hover:border-red-400 px-1.5 py-0.5 rounded transition">
+                                    <i class="fa-solid fa-eraser"></i> 清除
+                                </button>
+                            </div>
+                            <div class="relative border-2 border-dashed border-slate-300 rounded-lg bg-slate-50 h-[120px] overflow-hidden group">
+                                <canvas id="sigCanvas" class="absolute inset-0 w-full h-full cursor-crosshair touch-none"></canvas>
+                                <div id="sigPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-slate-400 select-none transition group-focus-within:opacity-0">
+                                    <i class="fa-solid fa-pen text-slate-300 mb-1"></i>
+                                    <span class="text-xs">請在此滑鼠拖曳或觸控手寫簽名</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center text-[10px] text-slate-400">
+                                <span>* 本簽章具備同等驗收確認效益</span>
+                                <span>簽署日期：<span class="current-date">2026/06/30</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 頁尾宣告 -->
+                <div class="text-center text-[10px] text-slate-400 border-t border-slate-100 pt-4 mt-4">
+                    本系統功能驗收確認單產出於 AI 驗收單輔助系統 • 頁面設計與元件功能經由甲乙雙方點對點實測通過。
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- 智慧選擇列印/匯出彈窗 (繞過 Iframe 沙盒 Allow-Modals 安全限制) -->
+    <div id="printModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4 no-print">
+        <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden border border-slate-200">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-file-pdf text-red-500"></i>
+                        選擇導出 / 列印方案
+                    </h3>
+                    <button onclick="closePrintModal()" class="text-slate-400 hover:text-slate-600 transition">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+                <p class="text-xs text-slate-500 leading-relaxed mb-5">
+                    由於目前瀏覽器預覽區實施了 <span class="font-semibold text-amber-600">Sandbox (沙盒) 安全防護</span>，直接呼叫列印會被瀏覽器屏蔽。我們為您配置了多套高相容性導出機制：
+                </p>
+                
+                <div class="space-y-3">
+                    <!-- 方案 1：html2pdf 客戶端虛擬編譯下載 -->
+                    <button onclick="exportToPDF()" class="w-full flex items-center gap-3.5 p-3.5 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 rounded-xl transition text-left group">
+                        <div class="bg-blue-600 text-white p-2.5 rounded-lg group-hover:scale-105 transition">
+                            <i class="fa-solid fa-file-arrow-down text-lg"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-xs font-bold text-blue-900">方案 A：AI 直接編譯下載 PDF (最推薦)</h4>
+                            <p class="text-[10px] text-blue-600/80 mt-0.5">採用本機 Canvas 重新繪製編譯，100% 繞過沙盒限制下載完美 A4 格式</p>
+                        </div>
+                    </button>
+
+                    <!-- 方案 2：開立新分頁解除 Sandbox 沙盒 -->
+                    <button onclick="fallbackPrintWindow()" class="w-full flex items-center gap-3.5 p-3.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 rounded-xl transition text-left group">
+                        <div class="bg-emerald-600 text-white p-2.5 rounded-lg group-hover:scale-105 transition">
+                            <i class="fa-solid fa-paper-plane text-lg"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-xs font-bold text-emerald-900">方案 B：開立新分頁進行紙本列印</h4>
+                            <p class="text-[10px] text-emerald-600/80 mt-0.5">在新分頁重建驗收單（包含手寫簽名圖片），直接調用系統原生列印</p>
+                        </div>
+                    </button>
+
+                    <!-- 方案 3：鍵盤手動操作說明 -->
+                    <div class="p-3.5 bg-slate-50 border border-slate-200 text-slate-700 rounded-xl flex items-start gap-3.5">
+                        <div class="bg-slate-400 text-white p-2.5 rounded-lg">
+                            <i class="fa-solid fa-keyboard text-lg"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-xs font-bold text-slate-900">方案 C：手動鍵盤快捷鍵 (免程式限制)</h4>
+                            <p class="text-[10px] text-slate-500 leading-relaxed mt-1">
+                                點擊右側驗收單任意處，直接按下鍵盤：<br>
+                                <span class="bg-white border border-slate-300 px-1 py-0.5 rounded shadow-sm text-slate-800 font-bold font-mono">Ctrl + P</span> (Mac 為 <span class="bg-white border border-slate-300 px-1 py-0.5 rounded shadow-sm text-slate-800 font-bold font-mono">Cmd + P</span>)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-slate-50 px-6 py-4 flex justify-between items-center border-t border-slate-100">
+                <span id="pdfLoadingText" class="text-xs font-semibold text-blue-600 hidden items-center gap-1.5 animate-pulse">
+                    <i class="fa-solid fa-spinner animate-spin"></i> PDF 編譯中，請稍候...
+                </span>
+                <span class="flex-1"></span>
+                <button onclick="closePrintModal()" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-lg font-bold transition">關閉</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 頁尾 -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-4 text-center border-t border-slate-800 no-print">
+        <p>© 2026 AI 智慧前端驗收單產生器 - 讓您的軟體交付更有品質、更專業</p>
+    </footer>
+
+    <!-- 全域控制 JS -->
+    <script>
+        const apiKey = ""; // 執行環境將在運行時提供 API 金鑰
+
+        // 綁定輸入即時更新基本資訊
+        const projNameInput = document.getElementById('projName');
+        const projVersionInput = document.getElementById('projVersion');
+        const developerInput = document.getElementById('developer');
+        const clientInput = document.getElementById('client');
+
+        const valProjName = document.getElementById('valProjName');
+        const valProjVersion = document.getElementById('valProjVersion');
+        const valDeveloper = document.getElementById('valDeveloper');
+        const valClient = document.getElementById('valClient');
+
+        function updateMetadata() {
+            if (projNameInput) valProjName.textContent = projNameInput.value || "未命名專案";
+            if (projVersionInput) valProjVersion.textContent = projVersionInput.value || "v1.0.0";
+            if (developerInput) valDeveloper.textContent = developerInput.value || "未指定開發者";
+            if (clientInput) valClient.textContent = clientInput.value || "未指定客戶";
+        }
+
+        if (projNameInput) projNameInput.addEventListener('input', updateMetadata);
+        if (projVersionInput) projVersionInput.addEventListener('input', updateMetadata);
+        if (developerInput) developerInput.addEventListener('input', updateMetadata);
+        if (clientInput) clientInput.addEventListener('input', updateMetadata);
+
+        // 初始化日期
+        document.querySelectorAll('.current-date').forEach(el => {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            el.textContent = `${year}/${month}/${day}`;
+        });
+
+        // ================= Canvas 手寫簽名板邏輯 =================
+        const canvas = document.getElementById('sigCanvas');
+        const ctx = canvas ? canvas.getContext('2d') : null;
+        const placeholder = document.getElementById('sigPlaceholder');
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        // 初始化 Canvas 尺寸
+        function resizeCanvas() {
+            if (!canvas || !ctx) return;
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width || 300;
+            canvas.height = rect.height || 120;
+            ctx.strokeStyle = "#1e293b"; // 深色鋼筆墨水色
+            ctx.lineWidth = 2.5;
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
+        }
+
+        // 當點擊或觸碰 canvas，隱藏提示文字
+        function hidePlaceholder() {
+            if (placeholder) placeholder.style.opacity = '0';
+        }
+
+        if (canvas && ctx) {
+            // 滑鼠與觸控事件監聽
+            canvas.addEventListener('mousedown', (e) => {
+                isDrawing = true;
+                const rect = canvas.getBoundingClientRect();
+                lastX = e.clientX - rect.left;
+                lastY = e.clientY - rect.top;
+                hidePlaceholder();
+            });
+
+            canvas.addEventListener('mousemove', (e) => {
+                if (!isDrawing) return;
+                const rect = canvas.getBoundingClientRect();
+                const currentX = e.clientX - rect.left;
+                const currentY = e.clientY - rect.top;
+                
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(currentX, currentY);
+                ctx.stroke();
+                
+                lastX = currentX;
+                lastY = currentY;
+            });
+
+            canvas.addEventListener('mouseup', () => isDrawing = false);
+            canvas.addEventListener('mouseout', () => isDrawing = false);
+
+            // 觸控支援 (手機/平板手寫)
+            canvas.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    isDrawing = true;
+                    const rect = canvas.getBoundingClientRect();
+                    const touch = e.touches[0];
+                    lastX = touch.clientX - rect.left;
+                    lastY = touch.clientY - rect.top;
+                    hidePlaceholder();
+                    e.preventDefault(); // 阻擋滾動頁面
+                }
+            }, { passive: false });
+
+            canvas.addEventListener('touchmove', (e) => {
+                if (!isDrawing) return;
+                if (e.touches.length === 1) {
+                    const rect = canvas.getBoundingClientRect();
+                    const touch = e.touches[0];
+                    const currentX = touch.clientX - rect.left;
+                    const currentY = touch.clientY - rect.top;
+
+                    ctx.beginPath();
+                    ctx.moveTo(lastX, lastY);
+                    ctx.lineTo(currentX, currentY);
+                    ctx.stroke();
+
+                    lastX = currentX;
+                    lastY = currentY;
+                    e.preventDefault();
+                }
+            }, { passive: false });
+
+            canvas.addEventListener('touchend', () => isDrawing = false);
+        }
+
+        function clearSignature() {
+            if (!canvas || !ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = "#1e293b";
+            ctx.lineWidth = 2.5;
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
+            if (placeholder) placeholder.style.opacity = '1';
+        }
+
+        // ================= 測試項目資料與表格管理 =================
+        let checklistItems = [];
+
+        // 重新繪製驗收表格
+        function renderTable() {
+            const tbody = document.getElementById('checklistTableBody');
+            if (!tbody) return;
+            
+            if (checklistItems.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="p-8 text-center text-slate-400">
+                            <i class="fa-solid fa-terminal text-3xl mb-2 block"></i>
+                            目前無功能驗收項目，請貼上程式碼讓 AI 產生或手動點擊「新增項目」
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = checklistItems.map((item, index) => {
+                return `
+                    <tr class="border-b border-slate-200 hover:bg-slate-50/50 transition">
+                        <td class="p-3 text-center text-slate-400 font-mono text-xs">${index + 1}</td>
+                        <td class="p-3">
+                            <input type="text" value="${escapeHtml(item.moduleName)}" 
+                                   onchange="updateItem(${index}, 'moduleName', this.value)" 
+                                   class="w-full bg-transparent font-medium text-slate-800 border-b border-transparent hover:border-slate-300 focus:border-blue-500 focus:outline-none focus:bg-white px-1 py-0.5 rounded transition">
+                        </td>
+                        <td class="p-3">
+                            <textarea onchange="updateItem(${index}, 'testStep', this.value)" 
+                                      class="w-full bg-transparent text-slate-600 text-xs border-b border-transparent hover:border-slate-300 focus:border-blue-500 focus:outline-none focus:bg-white px-1 py-0.5 rounded transition resize-y" rows="1">${escapeHtml(item.testStep)}</textarea>
+                        </td>
+                        <td class="p-3">
+                            <textarea onchange="updateItem(${index}, 'expectedResult', this.value)" 
+                                      class="w-full bg-transparent text-slate-600 text-xs border-b border-transparent hover:border-slate-300 focus:border-blue-500 focus:outline-none focus:bg-white px-1 py-0.5 rounded transition resize-y" rows="1">${escapeHtml(item.expectedResult)}</textarea>
+                        </td>
+                        <td class="p-3 text-center">
+                            <select onchange="updateItem(${index}, 'status', this.value)" 
+                                    class="text-xs bg-slate-50 border border-slate-300 rounded px-1.5 py-1 text-center font-bold text-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                                <option value="pass" ${item.status === 'pass' ? 'selected' : ''}>✓ 合格</option>
+                                <option value="fail" ${item.status === 'fail' ? 'selected' : ''}>✗ 不合格</option>
+                                <option value="na" ${item.status === 'na' ? 'selected' : ''}>- 免驗</option>
+                            </select>
+                        </td>
+                        <td class="p-3 text-center no-print">
+                            <button onclick="deleteItem(${index})" class="text-red-400 hover:text-red-600 p-1 transition" title="刪除此列">
+                                <i class="fa-solid fa-trash-can text-xs"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // HTML 脫模避開 XSS
+        function escapeHtml(text) {
+            if (!text) return "";
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // 更新特定欄位數值
+        function updateItem(index, field, value) {
+            if (checklistItems[index]) {
+                checklistItems[index][field] = value;
+            }
+        }
+
+        // 刪除項目
+        function deleteItem(index) {
+            checklistItems.splice(index, 1);
+            renderTable();
+        }
+
+        // 新增空白項目
+        function addNewCheckItem() {
+            checklistItems.push({
+                moduleName: "新增功能模組",
+                testStep: "請輸入手動測試步驟，例如：點擊特定按鈕或輸入內容",
+                expectedResult: "請輸入預期的頁面反應，例如：彈出成功提示、跳轉頁面、資料成功更新",
+                status: "pass"
+            });
+            renderTable();
+        }
+
+        // ================= Gemini AI 解析與本地備用 Parser =================
+
+        // 呼叫 Gemini 進行程式碼解析
+        async function generateAcceptanceForm() {
+            const code = document.getElementById('codeInput').value.trim();
+            const btn = document.getElementById('btnGenerate');
+            const aiStatus = document.getElementById('aiStatus');
+            const aiStatusText = document.getElementById('aiStatusText');
+
+            if (!code) {
+                alert("請先貼上前端程式碼！");
+                return;
+            }
+
+            // 進入載入狀態
+            btn.disabled = true;
+            btn.classList.add('opacity-50');
+            aiStatus.classList.remove('hidden');
+            aiStatus.classList.add('flex');
+            aiStatusText.textContent = "AI 正在深度解析您的程式碼結構中，請稍候...";
+
+            try {
+                // 建構提示詞
+                const systemPrompt = `你是一位專業的軟體 QA 測試經理與系統分析師。
+你的任務是仔細閱讀使用者提供的「前端程式碼」（可能包含 HTML、CSS、JavaScript、React、Vue 等），理解其介面構成、用戶可操作的元素（如按鈕、輸入框、選單、表單等）以及互動邏輯。
+請針對這份程式碼，為使用者量身打造一份專業的「前端驗收項目表」。
+
+你必須回傳一個符合 JSON Schema 的對象。回傳的 JSON 結構如下：
+{
+  "projectEstimate": "基於程式碼合理推估的專案功能名稱 (例如: 會員登入模組、購物車結帳頁面)",
+  "modules": [
+    {
+      "moduleName": "具體操作的功能模組或區塊名稱 (例如: 登入表單輸入, 驗證錯誤處理, 送出跳轉)",
+      "testStep": "手動測試的操作步驟 (例如: 1. 於帳號欄位輸入 test@example.com\\n2. 密碼欄位留空\\n3. 點擊登入按鈕)",
+      "expectedResult": "預期前端呈現的視覺或邏輯反饋 (例如: 密碼欄位下方應顯示「此欄位為必填」的紅色警告文字)"
+    }
+  ]
+}
+
+注意事項：
+1. 回傳內容中的所有文字，均必須使用「繁體中文（台灣繁體，Zh-TW）」。
+2. 請提取至少 4 至 8 個合理的測試點。
+3. 項目內容必須具體，跟程式碼中的 ID、Class、文字標籤 (Labels) 高度相關，讓使用者可以照著步驟一邊點擊畫面、一邊驗收。`;
+
+                const payload = {
+                    contents: [{
+                        parts: [{ text: `這是我的前端程式碼：\n\n\`\`\`\n${code}\n\`\`\`` }]
+                    }],
+                    systemInstruction: {
+                        parts: [{ text: systemPrompt }]
+                    },
+                    generationConfig: {
+                        responseMimeType: "application/json",
+                        responseSchema: {
+                            type: "OBJECT",
+                            properties: {
+                                projectEstimate: { type: "STRING" },
+                                modules: {
+                                    type: "ARRAY",
+                                    items: {
+                                        type: "OBJECT",
+                                        properties: {
+                                            moduleName: { type: "STRING" },
+                                            testStep: { type: "STRING" },
+                                            expectedResult: { type: "STRING" }
+                                        },
+                                        required: ["moduleName", "testStep", "expectedResult"]
+                                    }
+                                }
+                            },
+                            required: ["projectEstimate", "modules"]
+                        }
+                    }
+                };
+
+                const response = await fetchWithRetry(
+                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    }
+                );
+
+                const data = await response.json();
+                const resultText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (!resultText) {
+                    throw new Error("無法解析 AI 回傳的內容格式");
+                }
+
+                const jsonResult = JSON.parse(resultText);
+
+                // 更新標題資訊 (如果使用者沒有自己打的話)
+                if (projNameInput.value === "客製化前端系統開發案" || projNameInput.value === "") {
+                    projNameInput.value = jsonResult.projectEstimate || "AI 解析前端專案";
+                    updateMetadata();
+                }
+
+                // 寫入解析結果
+                checklistItems = jsonResult.modules.map(m => ({
+                    moduleName: m.moduleName,
+                    testStep: m.testStep,
+                    expectedResult: m.expectedResult,
+                    status: "pass"
+                }));
+
+                renderTable();
+                aiStatusText.textContent = "✓ 成功！已為您生成對應的測試驗收項目。";
+                setTimeout(() => aiStatus.classList.add('hidden'), 2000);
+
+            } catch (error) {
+                console.error("AI Generation Error:", error);
+                // 提示使用者，並啟動本地智慧 Parser
+                aiStatusText.textContent = "⚠️ AI 解析中斷，正在啟用本地靜態代碼解析器...";
+                
+                setTimeout(() => {
+                    fallbackParser(code);
+                    aiStatus.classList.add('hidden');
+                }, 1000);
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50');
+            }
+        }
+
+        // 帶有指數退避的 fetch 封裝
+        async function fetchWithRetry(url, options, retries = 5, delay = 1000) {
+            try {
+                const res = await fetch(url, options);
+                if (!res.ok) {
+                    if (res.status === 429 || res.status >= 500) {
+                        if (retries > 0) {
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                            return fetchWithRetry(url, options, retries - 1, delay * 2);
+                        }
+                    }
+                    throw new Error(`HTTP 錯誤! 狀態碼: ${res.status}`);
+                }
+                return res;
+            } catch (err) {
+                if (retries > 0) {
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    return fetchWithRetry(url, options, retries - 1, delay * 2);
+                }
+                throw err;
+            }
+        }
+
+        // 本地靜態備用解析器：當 Gemini API 出現問題或無 Key 時運作
+        function fallbackParser(code) {
+            checklistItems = [];
+            
+            // 嘗試偵測專案名稱
+            let guessedName = "客製化前端畫面驗收";
+            if (code.includes("<title>")) {
+                const titleMatch = code.match(/<title>([^<]+)<\/title>/i);
+                if (titleMatch && titleMatch[1]) guessedName = titleMatch[1].trim();
+            } else if (code.includes("h1") || code.includes("H1")) {
+                const h1Match = code.match(/<h1[^>]*>([^<]+)<\/h1>/i);
+                if (h1Match && h1Match[1]) guessedName = h1Match[1].trim().replace(/[{}]/g, '');
+            }
+            
+            projNameInput.value = guessedName;
+            updateMetadata();
+
+            // 1. 偵測輸入與按鈕
+            const buttons = code.match(/<button[^>]*>([\s\S]*?)<\/button>/gi) || code.match(/type=["']submit["']/gi);
+            const clickEvents = code.match(/onClick|onclick/gi);
+
+            // 建立一連串基礎驗收項目
+            if (code.includes("form") || code.includes("Form")) {
+                checklistItems.push({
+                    moduleName: "表單載入驗證",
+                    testStep: "1. 開啟頁面，確認表單與輸入欄位完整加載。\n2. 檢視標籤文字與預留提示是否清晰正確。",
+                    expectedResult: "頁面與表單載入正常，未見版面跑位、中文字型顯示無缺漏。",
+                    status: "pass"
+                });
+            }
+
+            if (buttons && buttons.length > 0) {
+                checklistItems.push({
+                    moduleName: "交互按鈕點擊響應",
+                    testStep: "點擊畫面中的按鈕（例如送出、重設或功能按鍵），觀察元件回應。",
+                    expectedResult: "點擊時按鈕有 Hover/Active 觸覺與視覺變化，並能正常觸發程式碼中對應的前端事件或跳窗。",
+                    status: "pass"
+                });
+            }
+
+            if (code.includes("input") || code.includes("textarea")) {
+                checklistItems.push({
+                    moduleName: "資料輸入可行性",
+                    testStep: "1. 於各輸入框中鍵入測試字串。\n2. 檢測是否可正常打字、刪除及切換欄位焦點。",
+                    expectedResult: "各輸入框皆可正常接收鍵盤輸入，且送出表單時能順利讀取到輸入的數值。",
+                    status: "pass"
+                });
+            }
+
+            if (clickEvents && clickEvents.length > 0) {
+                checklistItems.push({
+                    moduleName: "事件觸發與 UI 變化",
+                    testStep: "點擊特定事件元素（如核取方塊、自訂按鈕等），確認狀態切換機制。",
+                    expectedResult: "頁面狀態與相關變數變更流暢，UI 介面即時配合渲染最新狀態，並無卡頓。",
+                    status: "pass"
+                });
+            }
+
+            if (checklistItems.length === 0) {
+                checklistItems.push({
+                    moduleName: "前端靜態排版檢驗",
+                    testStep: "1. 開啟瀏覽器渲染檔案。\n2. 檢視整體排版、間距與色彩視覺設計。",
+                    expectedResult: "整體 UI 視覺層次分明、元件大小適中，完全符合設計排版規範。",
+                    status: "pass"
+                });
+            }
+
+            renderTable();
+        }
+
+        // ================= 智慧列印彈窗控制 =================
+        function openPrintModal() {
+            updateMetadata();
+            const modal = document.getElementById('printModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function closePrintModal() {
+            const modal = document.getElementById('printModal');
+            if (modal) {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }
+            const loadingText = document.getElementById('pdfLoadingText');
+            if (loadingText) loadingText.classList.add('hidden');
+        }
+
+        // ================= 方案 A：本地二進位 PDF 編譯下載（完全繞過 Sandbox 阻擋） =================
+        function exportToPDF() {
+            const loadingText = document.getElementById('pdfLoadingText');
+            if (loadingText) loadingText.classList.remove('hidden');
+
+            const element = document.getElementById('printSheet');
+            const projName = document.getElementById('valProjName').textContent.trim() || "前端功能";
+            
+            // 建立一個專用於導出的臨時 DOM Clone，確保把 input/textarea 的動態值轉譯為純文字
+            const clone = element.cloneNode(true);
+            
+            // 1. 將 input 轉換成純文字 span
+            const inputs = clone.querySelectorAll('input');
+            inputs.forEach(input => {
+                const val = input.value;
+                const span = document.createElement('span');
+                span.textContent = val;
+                span.className = "text-slate-900 border-b border-slate-300 px-1 font-semibold";
+                input.parentNode.replaceChild(span, input);
+            });
+
+            // 2. 將 textarea 轉換成保留換行的純文字 div
+            const textareas = clone.querySelectorAll('textarea');
+            textareas.forEach(textarea => {
+                const val = textarea.value || textarea.placeholder || "";
+                const div = document.createElement('div');
+                div.textContent = val;
+                div.className = "text-xs text-slate-700 whitespace-pre-wrap leading-relaxed";
+                textarea.parentNode.replaceChild(div, textarea);
+            });
+
+            // 3. 將狀態選單 select 轉換成亮眼的核取標籤
+            const selects = clone.querySelectorAll('select');
+            selects.forEach(select => {
+                const val = select.options[select.selectedIndex]?.text || "✓ 合格";
+                const span = document.createElement('span');
+                span.textContent = val;
+                span.className = "font-extrabold text-xs px-2.5 py-1 rounded bg-emerald-50 border border-emerald-300 text-emerald-700 inline-block text-center";
+                select.parentNode.replaceChild(span, select);
+            });
+
+            // 4. 將手寫畫布 Canvas 轉為 Base64 高清靜態圖片
+            const originalCanvas = document.getElementById('sigCanvas');
+            const clonedCanvas = clone.querySelector('#sigCanvas');
+            if (originalCanvas && clonedCanvas) {
+                try {
+                    // 若無簽名時不渲染空白圖
+                    if (placeholder && placeholder.style.opacity !== '0') {
+                        const span = document.createElement('span');
+                        span.textContent = "（尚未簽核）";
+                        span.className = "text-slate-400 text-xs italic";
+                        clonedCanvas.parentNode.replaceChild(span, clonedCanvas);
+                    } else {
+                        const img = document.createElement('img');
+                        img.src = originalCanvas.toDataURL('image/png');
+                        img.className = "absolute inset-0 w-full h-full object-contain p-1";
+                        clonedCanvas.parentNode.replaceChild(img, clonedCanvas);
+                    }
+                } catch (e) {
+                    console.error("Canvas signature export error:", e);
+                }
+            }
+
+            // 移除 clone 裡不需要出現在 A4 的控制項
+            const noPrints = clone.querySelectorAll('.no-print');
+            noPrints.forEach(el => el.remove());
+            const placeholderEl = clone.querySelector('#sigPlaceholder');
+            if (placeholderEl) placeholderEl.remove();
+
+            // 設定虛擬 PDF 輸出參數
+            const opt = {
+                margin:       [8, 8, 8, 8], // 頁面邊距(mm)
+                filename:     `驗收單_${projName}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // 臨時將 clone 丟入 body 做 off-screen 渲染
+            clone.style.position = 'absolute';
+            clone.style.left = '-9999px';
+            clone.style.top = '0';
+            clone.style.width = '794px'; // A4 網頁黃金像素寬度
+            document.body.appendChild(clone);
+
+            // 啟動 html2pdf 轉換並下載
+            html2pdf().set(opt).from(clone).save().then(() => {
+                document.body.removeChild(clone);
+                if (loadingText) loadingText.classList.add('hidden');
+                closePrintModal();
+            }).catch(err => {
+                console.error("PDF Generate error:", err);
+                if (loadingText) loadingText.classList.add('hidden');
+                alert("AI PDF 匯出時發生技術異常，建議採用【方案 B】或快捷鍵直接進行導出。");
+            });
+        }
+
+        // ================= 方案 B：開立解除 Sandbox 限制的新分頁進行原生紙本列印 =================
+        function fallbackPrintWindow() {
+            updateMetadata();
+            
+            const newWindow = window.open('', '_blank');
+            if (newWindow) {
+                let sigImgHtml = '';
+                if (canvas) {
+                    try {
+                        const sigDataUrl = canvas.toDataURL();
+                        sigImgHtml = `<img src="${sigDataUrl}" class="absolute inset-0 w-full h-full object-contain" />`;
+                    } catch (err) {
+                        sigImgHtml = `<span class="text-xs text-slate-400">（未簽署）</span>`;
+                    }
+                }
+
+                let sheetHtml = document.getElementById('printSheet').outerHTML;
+
+                newWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html lang="zh-TW">
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>${document.getElementById('sheetMainTitle').innerText}</title>
+                        <!-- 帶入 TailwindCSS 與字型樣式 -->
+                        <script src="https://cdn.tailwindcss.com"><\/script>
+                        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght=300;400;500;700;900&display=swap" rel="stylesheet">
+                        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+                        <style>
+                            body { font-family: 'Noto Sans TC', sans-serif; background: white; color: black; padding: 20px; }
+                            select { appearance: none; -webkit-appearance: none; border: none !important; background: transparent !important; }
+                            textarea, input { border: none !important; resize: none !important; outline: none !important; background: transparent !important; }
+                            .no-print { display: none !important; }
+                        </style>
+                    </head>
+                    <body class="p-4 sm:p-10">
+                        <div class="max-w-4xl mx-auto">
+                            ${sheetHtml}
+                        </div>
+                        <script>
+                            // 將新頁面中的動態 Canvas 元素替換為我們剛剛導出的靜態圖片
+                            const canvasEl = document.getElementById('sigCanvas');
+                            if (canvasEl) {
+                                const imgContainer = document.createElement('div');
+                                imgContainer.className = "absolute inset-0 w-full h-full flex items-center justify-center";
+                                imgContainer.innerHTML = \`${sigImgHtml}\`;
+                                canvasEl.parentNode.replaceChild(imgContainer, canvasEl);
+                            }
+                            
+                            // 移除清除按鈕與手寫提示
+                            const clearBtn = document.querySelector('button[onclick="clearSignature()"]');
+                            if (clearBtn) clearBtn.style.display = 'none';
+                            const placeholderEl = document.getElementById('sigPlaceholder');
+                            if (placeholderEl) placeholderEl.style.display = 'none';
+
+                            // 延遲 500ms 待樣式與 DOM 載入渲染完畢後，直接開啟列印系統
+                            setTimeout(() => {
+                                window.print();
+                            }, 500);
+                        <\/script>
+                    </body>
+                    </html>
+                `);
+                newWindow.document.close();
+                closePrintModal();
+            } else {
+                alert("瀏覽器攔截了彈出視窗導出。\n\n【最速解法】：\n請關閉此彈出，直接在驗收單右方預覽區點擊一下，接著按鍵盤「Ctrl + P」(Mac 為「Cmd + P」)，就能順暢調出瀏覽器原生的 PDF 儲存對話框！");
+            }
+        }
+
+        // ================= 預載範例程式碼 =================
+        function loadSampleCode(type) {
+            const loginCode = `import React, { useState } from 'react';
+
+export default function LoginForm() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!email || !password) {
+      setError('帳號及密碼均為必填項目！');
+      return;
+    }
+    if (password.length < 6) {
+      setError('密碼長度不可小於 6 位元');
+      return;
+    }
+    setError('');
+    alert('登入成功，正在導向控制台...');
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4">
+      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
+        <div>
+          <h2 className="text-center text-3xl font-extrabold text-gray-900">
+            企業客戶後台登入
+          </h2>
+        </div>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          {error && (
+            <div className="bg-red-50 text-red-700 p-3 rounded-lg text-sm border border-red-200">
+              {error}
+            </div>
+          )}
+          <div className="rounded-md shadow-sm -space-y-px">
+            <div>
+              <label className="sr-only">電子郵件信箱</label>
+              <input
+                id="email-address"
+                name="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                placeholder="請輸入 email (e.g. admin@company.com)"
+              />
+            </div>
+            <div>
+              <label className="sr-only">密碼</label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                placeholder="請輸入您的安全密碼"
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <input
+                id="remember-me"
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              />
+              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+                記住我的帳號
+              </label>
+            </div>
+            <div className="text-sm">
+              <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                忘記密碼？
+              </a>
+            </div>
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none"
+            >
+              確認安全登入
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}`;
+
+            const cartCode = `<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>豪華線上商城購物車</title>
+</head>
+<body>
+    <div id="cart-container" class="max-w-2xl mx-auto p-4">
+        <h2>我的專屬購物清單</h2>
+        <table class="w-full">
+            <thead>
+                <tr>
+                    <th>商品名稱</th>
+                    <th>單價</th>
+                    <th>數量</th>
+                    <th>小計</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>極簡皮革雙肩包</td>
+                    <td>NT$ 3,200</td>
+                    <td>
+                        <input type="number" id="qty-pack" value="1" min="1" class="w-12 text-center">
+                    </td>
+                    <td id="subtotal-pack">NT$ 3,200</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="summary">
+            <div class="flex justify-between font-bold text-lg">
+                <span>合計金額：</span>
+                <span id="total-amount">NT$ 3,200</span>
+            </div>
+            <button id="btn-checkout" onclick="proceedToCheckout()" class="btn-primary">
+                確認商品並前往結帳頁面
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function proceedToCheckout() {
+            const qty = document.getElementById('qty-pack').value;
+            if (qty < 1) {
+                alert('商品數量不可小於一！');
+                return;
+            }
+            alert('感謝您的訂購！系統即將跳轉至綠界安全付款閘道。');
+        }
+    <\/script>
+</body>
+</html>`;
+
+            if (type === 'login') {
+                document.getElementById('codeInput').value = loginCode;
+                if (projNameInput) projNameInput.value = "會員登入功能頁面";
+                if (projVersionInput) projVersionInput.value = "v1.2.0";
+            } else {
+                document.getElementById('codeInput').value = cartCode;
+                if (projNameInput) projNameInput.value = "豪華商城購物車清單";
+                if (projVersionInput) projVersionInput.value = "v2.0.4";
+            }
+            updateMetadata();
+            clearSignature();
+            
+            // 初始化載入時，直接對預載代碼進行靜態解析，呈現完美的初始表格
+            const code = document.getElementById('codeInput').value.trim();
+            fallbackParser(code);
+        }
+
+        // ================= 智慧生命週期：啟動與初始化 =================
+        function initAll() {
+            if (window.__isInitialized) return;
+            window.__isInitialized = true;
+
+            resizeCanvas();
+            updateMetadata();
+            loadSampleCode('login');
+        }
+
+        // 核心解鎖：直接檢查 readyState，確保在任何預覽沙盒中都能啟動！
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            initAll();
+        } else {
+            window.addEventListener('DOMContentLoaded', initAll);
+            window.addEventListener('load', initAll);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+    </script>
+</body>
+</html>
